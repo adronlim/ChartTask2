@@ -1,0 +1,82 @@
+{
+  "ChartComponent": {
+    "HistogramChartComponent": {
+      "id": 1,
+      "config": [
+        {
+          "type": "XYChart",
+          "categoryAxis": {
+            "gridPosition": "start",
+            "axisColor": "#DADADA"
+          },
+          "series": [
+            {
+              "type": "ColumnSeries",
+              "stacked": true,
+              "tooltip": {
+                "fontSize": "15px"
+              },
+              "tooltipText": "category:  [bold]{categoryX}[/] \n count: \t\t     [bold]{valueY}[/]",
+              "columns": {
+                "template": [
+                  {
+                    "fill": "am4core.color('#9674F3')",
+                    "opacity": 0.6
+                  }
+                ]
+              }
+            }
+          ],
+          "legend": {}
+        }
+      ]
+    },
+    "BarChartComponent": {
+      "id": 2,
+      "config": [
+        {
+          "type": "XYChart",
+          "categoryAxis": {
+            "gridPosition": "start",
+            "axisColor": "#DADADA"
+          },
+          "series": [
+            {
+              "type": "ColumnSeries",
+              "tooltip": {
+                "fontSize": "15px"
+              },
+              "tooltipText": "category:  [bold]{categoryX}[/] \n count: \t\t     [bold]{valueY}[/]",
+              "columns": {
+                "template": [
+                  {
+                    "fill": "am4core.color('#9674F3')",
+                    "opacity": 0.6
+                  }
+                ]
+              }
+            }
+          ],
+          "legend": {}
+        }
+      ]
+    },
+    "PieChartComponent": {
+      "id": 3,
+      "config": [
+        {
+          "series": [
+            {
+              "type": "PieSeries",
+              "dataFields": {
+                "value": "litres",
+                "category": "country"
+              }
+            }
+          ],
+          "legend": {}
+        }
+      ]
+    }
+  }
+}

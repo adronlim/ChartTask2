@@ -1,3 +1,8 @@
-<p>
-  chart works!
-</p>
+<div *ngIf="idComponentChart">
+  <span class="card">
+    <h3>Hero Statistics</h3>
+    <ng-template [appChartDirective]="Trigger"></ng-template>
+    <!--    <span>{{displayTemplate()}}<</span>-->
+  </span>
+
+</div>
