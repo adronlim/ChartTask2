@@ -1,7 +1,7 @@
-<div *ngIf="idComponentChart">
-  <span class="card">
+<div *ngIf="_idComponentChart">
+  <span *ngIf="ChartDataComponent" class="card">
     <h3>Hero Statistics</h3>
-    <ng-template [appChartDirective]="Trigger"></ng-template>
+    <ng-template *appChartDirective="ChartDataComponent"></ng-template>
     <!--    <span>{{displayTemplate()}}<</span>-->
   </span>
 

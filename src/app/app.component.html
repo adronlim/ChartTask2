@@ -2,7 +2,7 @@
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css" rel="stylesheet">
 <div class="appDiv " style="text-align:center">
   <div>
-    <app-nav-bar (clickTruthEmitter)="getClickTriger($event)" (idEmitter)="getChartCompID($event)"></app-nav-bar>
+    <app-nav-bar (clickTruthEmitter)="getClickTrigger($event)" (idEmitter)="getChartCompID($event)"></app-nav-bar>
   </div>
 
   <!--<div class="container">-->
@@ -15,7 +15,7 @@
   <!--    </div>-->
   <!--  </div>-->
   <!--</div>-->
-  <div class="container">
+  <div *ngIf="IdChartComponent" class="container">
     <app-dashboard [idComponentDB]="IdChartComponent"></app-dashboard>
   </div>
   <!--<div><app-panel-layout></app-panel-layout></div>-->

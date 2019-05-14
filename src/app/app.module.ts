@@ -2,7 +2,6 @@ import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 
 import {AppComponent} from './app.component';
-import {ChartComponent} from './chart/chart.component';
 import {PanelLayoutComponent} from './panel-layout/panel-layout.component';
 import {ChartDirective} from './chart-directive.directive';
 import {NavBarComponent} from './nav-bar/nav-bar.component';
@@ -15,27 +14,40 @@ import {SideBarComponent} from './side-bar/side-bar.component';
 import {HttpClientModule} from '@angular/common/http';
 import {FormsModule} from '@angular/forms';
 import {ServicesService} from './services.service';
+import {ChartModule} from './chart/chart.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ChartComponent,
     PanelLayoutComponent,
-    ChartDirective,
-    HistogramChartComponent,
     NavBarComponent,
     BarChartComponent,
     PieChartComponent,
+    HistogramChartComponent,
     DashboardComponent,
     SideBarComponent,
   ],
   imports: [
     BrowserModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    ChartModule
   ],
-  providers: [ServicesService],
-  entryComponents: [BarChartComponent, PieChartComponent, HistogramChartComponent],
+  providers: [],
+  entryComponents: [
+    BarChartComponent,
+    PieChartComponent,
+    HistogramChartComponent
+  ]
+  ,
+  exports: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  static forRoot() {
+    return {
+      ngModule: AppModule,
+      providers: [ServicesService, ChartDirective]
+    };
+  }
+}
