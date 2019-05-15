@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import {ChartDirective} from '../chart-directive.directive';
 import {ChartDataComponent} from '../ChartData';
 import {ServicesService} from '../services.service';
@@ -8,19 +8,10 @@ import {ServicesService} from '../services.service';
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.css']
 })
-export class ChartComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ChartComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
 
-  @ViewChild(ChartDirective) chartDirective: ChartDirective;
   _idComponentChart: any;
-
-  constructor(/*private componentFactoryResolver: ComponentFactoryResolver, */private Service: ServicesService) {
-  }
-
-  get idComponentDB(): any {
-    return this._idComponentChart;
-  }
-  @Input() onClick: boolean;
-  Trigger = false;
+  Trigger = true;
   dItem: ChartDataComponent[];
   HeroesDataS: any;
   ChartSetting: any;
@@ -29,30 +20,42 @@ export class ChartComponent implements OnInit, AfterViewInit, OnDestroy {
   ChartDataComponent: ChartDataComponent;
   multiYvalue: boolean;
   componentFactory: any;
-  viewContainerRef: any;
-  componentRef: any;
-
+  viewContainerRef: any;  // id_Component_Chart: any;
+  componentRef = 1;
+  @ViewChild(ChartDirective) chartDirective: ChartDirective;
+  @Input() onClick: boolean;
   @Input()
   set idComponentDB(idComponentDB: any) {
     this._idComponentChart = idComponentDB;
   }
 
+  constructor(/*private componentFactoryResolver: ComponentFactoryResolver, */private Service: ServicesService) {
+  }
+
+  get idComponentDB(): any {
+    return this._idComponentChart;
+  }
   ngOnInit() {
     console.log(this._idComponentChart);
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    if ((changes.idComponentDB.currentValue != changes.idComponentDB.previousValue) && changes.idComponentDB.previousValue && this.Trigger) {
+      console.log('%cinput changed!!!!!!!!!!', 'background: #222; color: #bada55');
+      console.log(changes);
+      this._idComponentChart = changes.idComponentDB.currentValue;
+      console.log(this._idComponentChart);
+      this.componentRef++;
+      // if (this.componentRef == 3) {
+      //   this.Trigger = false;
+      //   return;
+      // }
+      this.loadChartComponent();
+    }
+  }
   ngAfterViewInit() {
     console.log(this._idComponentChart);
-    this.Service.getHeroes().subscribe(chartData => {
-      this.HeroesDataS = chartData.HEROES;
-      console.log(chartData.statSetting);
-      this.ChartSetting = chartData.statSetting;
-      this.key = Object.keys(this.HeroesDataS[0]);
-      this.key.splice(0, 2);
-      console.log(this.HeroesDataS);
-      console.log(this.key);
-      this.loadChartComponent();
-    });
+    this.loadChartComponent();
   }
 
   ngOnDestroy() {
@@ -61,47 +64,53 @@ export class ChartComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   loadChartComponent() {
-    let chartComponents = this.Service.getChartComponent();
-    console.log(chartComponents);
-    console.log(this._idComponentChart);
-    if (this._idComponentChart) {
-      this.Trigger = true;
-    }
-    let chartDataParameter = [];
-
-    let currentIndex: number;
-
-    switch (this._idComponentChart) {
-      case 'BarChartComponent':
-        currentIndex = 0;
-        this.multiYvalue = false;
-        break;
-      case 'PieChartComponent':
-        currentIndex = 1;
-        this.multiYvalue = false;
-        break;
-      case 'HistogramChartComponent':
-        currentIndex = 2;
-        this.multiYvalue = true;
-        break;
-      default:
-        return;
-    }
-
-
-    if (!this.multiYvalue) {
-      this.HeroesDataS.forEach(e => {
-        chartDataParameter.push({name: e.name, str: e.str});
-      });
-      console.log(chartDataParameter);
-      this.ChartDataComponent = new ChartDataComponent(chartComponents[currentIndex], chartDataParameter, this.ChartSetting, this.key);
-    } else {
+    this.Service.getHeroes().subscribe(chartData => {
+      this.HeroesDataS = chartData.HEROES;
+      console.log(chartData.statSetting);
+      this.ChartSetting = chartData.statSetting;
+      this.key = Object.keys(this.HeroesDataS[0]);
+      this.key.splice(0, 2);
       console.log(this.HeroesDataS);
-      this.ChartDataComponent = new ChartDataComponent(chartComponents[currentIndex], this.HeroesDataS, this.ChartSetting, this.key);
-    }
+      console.log(this.key);
+      let chartComponents = this.Service.getChartComponent();
+      console.log(chartComponents);
+      console.log(this._idComponentChart);
+      if (this._idComponentChart) {
+        this.Trigger = true;
+      }
+      let chartDataParameter = [];
 
-    console.log(this.ChartDataComponent);
+      let currentIndex: number;
 
+      switch (this._idComponentChart) {
+        case 'BarChartComponent':
+          currentIndex = 0;
+          this.multiYvalue = false;
+          break;
+        case 'PieChartComponent':
+          currentIndex = 1;
+          this.multiYvalue = false;
+          break;
+        case 'HistogramChartComponent':
+          currentIndex = 2;
+          this.multiYvalue = true;
+          break;
+        default:
+          return;
+      }
+      console.log(this.HeroesDataS);
+      if (!this.multiYvalue) {
+        this.HeroesDataS.forEach(e => {
+          chartDataParameter.push({name: e.name, str: e.str});
+        });
+        console.log(chartDataParameter);
+        this.ChartDataComponent = new ChartDataComponent(chartComponents[currentIndex], chartDataParameter, this.ChartSetting, this.key);
+      } else {
+        console.log(this.HeroesDataS);
+        this.ChartDataComponent = new ChartDataComponent(chartComponents[currentIndex], this.HeroesDataS, this.ChartSetting, this.key);
+      }
+      console.log(this.ChartDataComponent);
+    });
     // this.displayTemplate();
   }
 
