@@ -1,17 +1,17 @@
 {
-  "fontF": [
-    {}
-  ],
   "statSetting": [
     {
+      "statID": "str",
       "statName": "Strength",
       "statColor": "#FF6D69"
     },
     {
+      "statID": "ag",
       "statName": "Agility",
       "statColor": "#65F76F"
     },
     {
+      "statID": "int",
       "statName": "Intelligence",
       "statColor": "#9674F3"
     }
@@ -157,5 +157,8 @@
       "ag": 5,
       "int": 13
     }
+  ],
+  "fontF": [
+    {}
   ]
 }

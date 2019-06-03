@@ -1,7 +1,13 @@
-<div *ngIf="_idComponentChart">
+<div *ngIf="_idComponentChart && chartData">
   <span *ngIf="ChartDataComponent" class="card">
     <h3>Hero Statistics</h3>
-    <ng-template *appChartDirective="ChartDataComponent"></ng-template>
+    <label>
+      <input (change)="dStructureChange= !dStructureChange" name="Change Structure" type="checkbox" value="3D">3D Data Structure
+    </label>
+    <ng-template *appChartDirective="ChartDataComponent" appChartDirective ngIf="!showError"></ng-template>
+    <div *ngIf="structureError">
+      The Chart is not able to support the data. Please tick the checkbox to change the data structure.
+    </div>
     <!--    <span>{{displayTemplate()}}<</span>-->
   </span>
 

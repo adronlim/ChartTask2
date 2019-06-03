@@ -11,25 +11,27 @@ export class BarChartComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() data: any;
   setting: any;
   key: any;
-
+  settingKeys: any;
+  chartId: any;
   stack = false;
   Chart: am4charts.XYChart;
   chartData: any = [];
 
   constructor() {
   }
-
   ngOnInit() {
-  }
+    this.settingKeys = Object.keys(this.setting);
+    this.chartId = this.setting[this.settingKeys[1]];
 
+  }
   ngOnDestroy() {
     if (this.Chart) {
       this.Chart.dispose();
     }
   }
-
   ngAfterViewInit(): void {
     console.log(this.setting);
+    console.log(this.data);
     this.key = Object.keys(this.data[0]);
     console.log(this.key);
     let yFullName: string;
@@ -37,9 +39,11 @@ export class BarChartComponent implements OnInit, AfterViewInit, OnDestroy {
 
     console.log(this.data);
     console.log(this.setting);
-    console.log(this.setting.statName);
-
-    this.Chart = am4core.create(this.setting.statName, am4charts.XYChart);
+    // console.log(this.setting.statName);
+    console.log(this.setting[this.settingKeys[1]]);
+    console.log(this.settingKeys);
+    console.log(this.chartId);
+    this.Chart = am4core.create(this.chartId, am4charts.XYChart);
 
     let chart: am4charts.XYChart;
     chart = this.Chart;
@@ -51,27 +55,30 @@ export class BarChartComponent implements OnInit, AfterViewInit, OnDestroy {
     chart.fontFamily = 'Calibri, serif';
     chart.fontWeight = 'lighter';
     let i = 0;
-    // this.chartData = [...this.data];
-    this.chartData = this.data;
+    this.chartData = [...this.data];
+    // this.chartData = this.data;
 
-    this.chartData.sort((a, b) => a[this.key[1]] - b[this.key[1]]);
 
     chart.data = this.chartData;
 
     console.log(chart.data);
-    yFullName = this.setting.statName;
+    yFullName = this.setting[this.settingKeys[1]];
     chartColor = this.setting.statColor;
 
 // Create axes
     const categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
-    categoryAxis.dataFields.category = this.key[0];
+    categoryAxis.dataFields.category = this.key[this.key.length - 2];
     console.log(this.key);
     categoryAxis.fontSize = '20px';
     categoryAxis.renderer.grid.template.location = 0;
     categoryAxis.renderer.minGridDistance = 30;
     categoryAxis.renderer.labels.template.horizontalCenter = 'right';
     categoryAxis.renderer.labels.template.verticalCenter = 'middle';
-    categoryAxis.renderer.labels.template.rotation = 270;
+    if (this.settingKeys[0] == 'hisID') {
+      categoryAxis.renderer.labels.template.rotation = 0;
+    } else {
+      categoryAxis.renderer.labels.template.rotation = 270;
+    }
     categoryAxis.tooltip.disabled = true;
     categoryAxis.renderer.minHeight = 110;
 
@@ -94,8 +101,8 @@ export class BarChartComponent implements OnInit, AfterViewInit, OnDestroy {
     // Create series
     const series = chart.series.push(new am4charts.ColumnSeries());
     series.sequencedInterpolation = true;
-    series.dataFields.valueY = this.key[1];
-    series.dataFields.categoryX = this.key[0];
+    series.dataFields.valueY = this.key[this.key.length - 1];
+    series.dataFields.categoryX = this.key[this.key.length - 2];
     // series.fontSize = '50px';
     series.name = yFullName;
     series.fill = am4core.color(chartColor);

@@ -48,13 +48,14 @@ export class PieChartComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 // Add and configure Series
     let pieSeries = this.Chart.series.push(new am4charts.PieSeries());
+    console.log(this.data);
     this.key = Object.keys(this.data[0]);
     this.chartData = [...this.data];
     console.log(this.setting.statName);
     console.log(this.key);
 
-    pieSeries.dataFields.value = this.key[1];
-    pieSeries.dataFields.category = this.key[0];
+    pieSeries.dataFields.category = this.key[this.key.length - 2];
+    pieSeries.dataFields.value = this.key[this.key.length - 1];
 
 // Let's cut a hole in our Pie chart the size of 30% the radius
     this.Chart.innerRadius = am4core.percent(30);
@@ -87,6 +88,7 @@ export class PieChartComponent implements OnInit, OnDestroy, AfterViewInit {
     let hoverState = pieSeries.slices.template.states.getKey('hover'); // normally we have to create the hover state, in this case it already exists
 
 // Slightly shift the shadow and make it more prominent on hover
+    // tslint:disable-next-line:new-parens
     let hoverShadow = hoverState.filters.push(new am4core.DropShadowFilter);
     hoverShadow.opacity = 0.7;
     hoverShadow.blur = 5;
@@ -94,7 +96,7 @@ export class PieChartComponent implements OnInit, OnDestroy, AfterViewInit {
 // Add a legend
     this.Chart.legend = new am4charts.Legend();
     console.log(this.chartData);
-    this.Chart.data = this.chartData;
+    this.Chart.data = [...this.chartData];
 
   }
 
