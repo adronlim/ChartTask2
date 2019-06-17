@@ -10,13 +10,29 @@ export class ChartDirective implements OnInit, AfterViewInit, OnChanges {
   componentRef: any;
   ChartDataComponent: ChartDataComponent;
   item: any;
+  constructor(public viewContainerRef: ViewContainerRef, private componentFactoryResolver: ComponentFactoryResolver) {
+    this._error = false;
+  }
 
   _triggerChange: boolean;
-  constructor(public viewContainerRef: ViewContainerRef, private componentFactoryResolver: ComponentFactoryResolver) {
+
+  _error: boolean;
+
+  @Input() set error(error: boolean | false) {
+    this._error = error;
   }
 
   get triggerChange() {
     return this._triggerChange;
+  }
+
+  @Input() set appChartDirective(Item: ChartDataComponent) {
+    console.log(Item);
+    this.item = Item;
+    this.clear(true);
+    if (!this.error) {
+      this.loadChart();
+    }
   }
 
   @Input() set triggerChange(triggerChange: boolean) {
@@ -28,10 +44,10 @@ export class ChartDirective implements OnInit, AfterViewInit, OnChanges {
     return this.componentFactory;
   }
 
-  @Input() set appChartDirective(Item: ChartDataComponent) {
-    console.log(Item);
-    this.item = Item;
-    this.loadChart();
+  clear(Switch: boolean) {
+    if (Switch) {
+      this.viewContainerRef.clear();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -53,7 +69,6 @@ export class ChartDirective implements OnInit, AfterViewInit, OnChanges {
 
   loadChart() {
     this.componentFactory = this.componentFactoryResolver.resolveComponentFactory(this.item.component);
-    this.viewContainerRef.clear();
     console.log(this.item);
     this.componentRef = this.viewContainerRef.createComponent(this.componentFactory);
     (this.componentRef.instance as ChComponentInt).data = this.item.data;

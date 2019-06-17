@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import {ChartDirective} from '../chart-directive.directive';
 import {ChartDataComponent} from '../ChartData';
 import {ServicesService} from '../services.service';
@@ -14,20 +14,30 @@ export class ChartComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   TriggerChange = true;
   dItem: ChartDataComponent[];
   HeroesDataS?: any;
+  keySlength: number;
   key?: any;
   showError = false;
   statKey?: any;
+  getProcessedDataKeys: any;
   chartData?: any;
+  Data3d: any;
+  Data2d: any;
+  DataHis: any;
+  DataPie: any;
   ChartDataComponent: ChartDataComponent;
-  is3D: boolean;
+  is3D: boolean;  // The ability of chart to support data structure
+  to3dStructure = false; // Change data structure of radio input
+  firstChecked: boolean;
+  first = true;
+  triggerButton = true;
   sortData: boolean;
-  dStructureChange = false;
   multiYvalue: boolean;
   processedData: any;
   currentIndex: number;
   chartComponents: any;
-  structureError = false;
+  inputElement: any;
   @ViewChild(ChartDirective) chartDirective: ChartDirective;
+  @ViewChild('inputCB') inputCB?: ElementRef;
   @Input() onClick: boolean;
   @Input()
   set idComponentDB(idComponentDB: any) {
@@ -38,149 +48,200 @@ export class ChartComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   }
 
   constructor(/*private componentFactoryResolver: ComponentFactoryResolver, */private Service: ServicesService,) {
-    // this.chartData = this.waitService();
     this.chartComponents = this.Service.getChartComponent();
-    console.log(this._idComponentChart);
-    console.log(this.chartData);
+    // console.log(this._idComponentChart);
+    // console.log(this.chartData);
   }
 
-  // async waitService(): Promise<any> {
-  //   let data =  await this.Service.Data;
-  //   console.log(data);
-  //   return data;
-  // }
   ngOnInit() {
-    // this.waitService().then( result => console.log(result));
-    // this.chartData = this.waitService();
-    console.log(this._idComponentChart);
-    console.log(this.chartData);
-  }
-  ngOnChanges(changes: SimpleChanges) {
-    if ((changes.idComponentDB.currentValue != changes.idComponentDB.previousValue) && changes.idComponentDB.previousValue) {
-      this.setParameter();
-      //
-      //   if (changes.idComponentDB.currentValue > 2 || changes.idComponentDB.previousValue < 3 ) {
-      //
-      //     this.TriggerChange = true;
-      //     // this.setParameter();
-      //     // console.log('%cinput changed!!!!!!!!!!', 'background: #222; color: #bada55');
-      //     // console.log(changes);
-      //     // console.log(this._idComponentChart);
-      //
-      //     // // **** this.chartData.sort((a, b) => a[this.key[2]] - b[this.key[2]]); // To sort elements by key
-      //     // this.loadChartComponent();
-      //   } else if (changes.idComponentDB.previousValue > 2 || changes.idComponentDB.currentValue < 3 ) {
-      //       this.
-      //   }
-      this.loadChartComponent(this.processedData);
-      //
-    }
-  }
-  ngAfterViewInit() {
     this.statKey = 'str';
     this.Service.get2dHeroes().subscribe(data => {
-      // this.TriggerChange = false;
-      // this.dStructureChange = true;
-      console.log(data);
+      // this.to3dStructure = true;
+      console.log(this._idComponentChart);
       if (this.Service.findKeyAvailable(data, 'HEROES', 'statSetting')) {
-
-        // this.Service.processRawDatabyKey(data,);
         this.chartData = data;
-        this.HeroesDataS = this.Service.getDatabyKey(this.chartData, 'HEROES', 'statSetting');
-
-        this.setParameter(); // To get value of currentIndex & multiYvalue
         console.log(this.chartData);
+        this.setParameter(); // To get value of currentIndex & multiYvalue
+        console.log('TRIGGER BUTTON IS ', this.triggerButton);
+        this.processDatabyID(this.idComponentDB);
+        console.log(this.keySlength > 3 === this.is3D);
+        console.log('keySlength >3 : \n', this.keySlength > 3);
+        console.log('is3D  : \n', this.is3D);
+        console.log('%cON CHANGE', 'background: #222; color: #bada55');
+        console.log(this.HeroesDataS);
+        console.log('HEY!');
+
         this.loadChartComponent(this.processedData);
-        console.log(this._idComponentChart);
-        console.log(typeof this.chartData + ': \n', this.chartData + ' \n');
-        console.log(this.processedData);
+        if (!this.is3D && this.first) {
+          this.triggerButton = false;
+          console.log('TRIGGER BUTTON IS FALSE!!!!');
+        }
+        this.first = false;
+        this.showError = false;
       }
     });
   }
 
-  loadChartComponent(data?: any) {
-    let chartDataParameter = [];
-    let ChartSetting: any;
-    this.key = Object.keys(data[0][0]);
-
-    if (!this.multiYvalue) { // If the data is 2D type
-      // this.processedData = this.chartData.slice(0, this.chartData.length - 1);
-      console.log(this.processedData);
-      chartDataParameter = [...data[0]];
-      // chartDataParameter = data[0].slice(0, data[0].length - 1);
-      ChartSetting = data[1];
-
-      console.log(this.key);
-      // For 2D data structure
-      // chartDataParameter = this.HeroesDataS[0].slice(0, this.HeroesDataS[0].length - 1);
-      // this.HeroesDataS[0].forEach(e => {
-      //   chartDataParameter.push({name: e.name, [this.key]: e[this.key]});
-      // });
-      // console.log(` ${name}    ${e.name} $\n} ${[this.key]} ${e[this.key]} `);
-      console.log(chartDataParameter);
-      console.log(this.key);
-      console.log(ChartSetting);
-      this.ChartDataComponent = new ChartDataComponent
-      (this.chartComponents[this.currentIndex], chartDataParameter, ChartSetting, this.key);
-    } else {
-      console.log(this.HeroesDataS);
-      this.ChartDataComponent = new ChartDataComponent
-      (this.chartComponents[this.currentIndex], this.HeroesDataS, ChartSetting, this.key);
-      console.log(this.ChartDataComponent);
+  ngOnChanges(changes: SimpleChanges) {
+    console.log(changes);
+    let idChanged = ((changes.idComponentDB.currentValue != changes.idComponentDB.previousValue) && changes.idComponentDB.previousValue);
+    // let detectTo3dStructure = (changes.to3dStructure.previousValue !== undefined || changes.to3dStructure.previousValue !== null);
+    // let radioChanged = (changes.to3dStructure.previousValue != changes.to3dStructure.currentValue) || detectTo3dStructure;
+    if (idChanged) {
+      if (this.is3D == this.keySlength > 3) {
+        this.showError = false;
+        this.loadChartComponent(this.processedData);
+      } else {
+        this.showError = true;
+        console.log('%cshow ERROR!!!!!!!!!!!!!!!!!!', 'background: #222; color: red');
+      }
     }
   }
 
-  returnDataValue(data, sortData: boolean) {
+  ngAfterViewInit() {
+  }
 
-    if (!this.multiYvalue) {
+  loadChartComponent(data?: any) {
+
+    let chartDataParameter: any;
+    let ChartSetting: any;
+    console.log(data);
+    this.key = Object.keys(data[0][0]);
+    chartDataParameter = [...data[0]];
+    ChartSetting = data[1];
+    if (!this.multiYvalue) { // If the data is 2D type
+      console.log(this.processedData);
+      console.log(this.key);
+      console.log(chartDataParameter);
+      console.log(ChartSetting);
+    } else {
+      console.log(this.HeroesDataS);
+      console.log(ChartSetting);
+      console.log(this.ChartDataComponent);
+    }
+    this.ChartDataComponent = new ChartDataComponent(this.chartComponents[this.currentIndex], chartDataParameter, ChartSetting, this.key);
+  }
+
+  returnDataValue(index, data, sortData: boolean) {
+    if (index == -1) {
       console.log(data);
       return this.Service.getChartData(data, this.statKey, sortData, this.currentIndex);
-    } else if (this.multiYvalue) {
-      // this.Service.sortDataFunc();
+    } else if (index == 1) {
       return data;
     }
   }
-
-  // sortDataFunction(data, sortData) {
-  //   if (sortData) {
-  //     this.Service.sortDataFunc();
-  //   }
-  // }
   setParameter() {
+    console.log('%csetParameter!!!!!!!!!!!!!!!!!!', 'background: #222; color: red');
+    // this.firstChecked = false;
     switch (this._idComponentChart) {
       case 'BarChartComponent':
         this.currentIndex = 0;
         this.multiYvalue = false;
         this.sortData = true;
-        this.processedData = this.returnDataValue(this.HeroesDataS, this.sortData);
+        this.is3D = false;
         console.log(this.processedData);
         break;
       case 'PieChartComponent':
         this.currentIndex = 1;
         this.multiYvalue = false;
         this.sortData = false;
-        this.processedData = this.returnDataValue(this.HeroesDataS, this.sortData);
+        this.is3D = false;
         break;
       case 'HistogramChartComponent':
         this.currentIndex = 2;
         this.multiYvalue = false;
         this.sortData = true;
-        this.processedData = this.returnDataValue(this.HeroesDataS, this.sortData);
+        this.is3D = false;
+        break;
+      case 'StackedBarChartComponent':
+        this.currentIndex = 3;
+        this.multiYvalue = true;
+        this.sortData = false;
+        this.is3D = true;
         break;
       default:
         return;
     }
   }
 
-  check3Dstructure(data?: any) {
-    let objKey: string[];
-    objKey = Object.keys(data[0]);
-    return objKey.slice(2).length > 1;
+  processDatabyID(id: string) {
+    this.HeroesDataS = this.Service.getDatabyKey(this.chartData, 'HEROES', 'statSetting');
+    console.log(this.processedData);
+
+    switch (id) {
+      case 'BarChartComponent':
+        this.Data2d = this.returnDataValue(-1, this.HeroesDataS, true);
+        this.processedData = this.Data2d;
+        break;
+      case 'PieChartComponent':
+        this.DataPie = this.returnDataValue(-1, this.HeroesDataS, false);
+        this.processedData = this.DataPie;
+        break;
+      case 'HistogramChartComponent':
+        this.DataHis = this.returnDataValue(-1, this.HeroesDataS, true);
+        this.processedData = this.DataHis;
+        break;
+      case 'StackedBarChartComponent':
+        this.Data3d = this.returnDataValue(1, this.HeroesDataS, false);
+        this.processedData = this.Data3d;
+        break;
+      default:
+        return;
+    }
+    this.getProcessedDataKeys = Object.keys(this.processedData[0][0]);
+    this.keySlength = this.getProcessedDataKeys.length;
+    console.log(this.getProcessedDataKeys);
+    console.log(this.keySlength);
   }
+
+  check() {
+    console.log('%cCHECK!!!!!!!!!!!!!!!!!!', 'background: #222; color: red');
+    this.triggerButton = !this.triggerButton;
+
+    let valid = this.keySlength > 3 === this.is3D;
+    let valid2 = valid === this.triggerButton;
+    // console.log(this.to3dStructure);
+    // console.log(this.keySlength);
+    // console.log(valid);
+    // console.log(this.triggerButton);
+    // console.log((valid) === this.triggerButton);
+    // console.log('keySlength >3 : \n', this.keySlength > 3);
+    // console.log('is3D  : \n', this.is3D);
+    if (!(this.is3D == this.keySlength > 3)) {
+      this.showError = true;
+    } else {
+      if (this.keySlength == 2) {
+
+      } else if (this.keySlength == 3) {
+
+      }
+
+      console.log('HELLLLLLOOO');
+      // this.setParameter();
+      this.showError = false;
+
+      this.loadChartComponent(this.processedData);
+
+    }
+  }
+
+  // changeNgetData(tickedInput: boolean){
+  //   if (tickedInput) {
+  //     this.HeroesDataS = this.Service.getDatabyKey(this.chartData, 'HEROES', 'statSetting');
+  //   }
+  //   else {
+  //     this.processedData = this.returnDataValue(this.HeroesDataS, this.sortData);
+  //   }
+  // }
+
+  // check3Dstructure(data?: any) {   // Check 3 dimensional data
+  //   let objKey: string[];
+  //   objKey = Object.keys(data[0]);
+  //   return objKey.slice(2).length > 1;
+  // }
 
   ngOnDestroy() {
     this._idComponentChart = null;
-    // this.displayTemplate();
   }
 
 

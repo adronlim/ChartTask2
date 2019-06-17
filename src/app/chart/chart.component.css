@@ -1,4 +1,36 @@
 .card {
   height: 1000px;
-  max-width: 90%;
+  max-width: 98%;
+}
+
+.ERROR {
+  height: 400px;
+  width: inherit;
+  text-align-all: center;
+  padding: auto;
+  margin: auto;
+}
+
+.btn-dark {
+  margin: auto;
+  width: 140px;
+  height: 40px;
+  border: 0;
+
+}
+
+.btn-dark:disabled {
+  background-color: grey;
+}
+
+.btn-dark:hover {
+  background-color: white;
+  color: black;
+  border: 1px solid black;
+}
+
+.btn-dark:disabled:hover {
+  background-color: grey;
+  color: white;
+  border: 0;
 }

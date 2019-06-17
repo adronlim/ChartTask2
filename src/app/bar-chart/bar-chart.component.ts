@@ -22,7 +22,6 @@ export class BarChartComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     this.settingKeys = Object.keys(this.setting);
     this.chartId = this.setting[this.settingKeys[1]];
-
   }
   ngOnDestroy() {
     if (this.Chart) {
@@ -57,7 +56,6 @@ export class BarChartComponent implements OnInit, AfterViewInit, OnDestroy {
     let i = 0;
     this.chartData = [...this.data];
     // this.chartData = this.data;
-
 
     chart.data = this.chartData;
 
