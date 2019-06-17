@@ -97,7 +97,6 @@ export class ChartComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       }
     }
   }
-
   ngAfterViewInit() {
   }
 
