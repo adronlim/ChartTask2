@@ -97,6 +97,7 @@ export class ChartComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       }
     }
   }
+
   ngAfterViewInit() {
   }
 
@@ -178,6 +179,7 @@ export class ChartComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         break;
       case 'HistogramChartComponent':
         this.DataHis = this.returnDataValue(-1, this.HeroesDataS, true);
+        console.log(this.DataHis);
         this.processedData = this.DataHis;
         break;
       case 'StackedBarChartComponent':
@@ -251,7 +253,6 @@ export class ChartComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         this.componentFactory = this.componentFactoryResolver.resolveComponentFactory(DItem);
         this.viewContainerRef = this.chartDirective.viewContainerRef;
         this.viewContainerRef.clear();
-
         this.componentRef = this.viewContainerRef.createComponent(this.componentFactory);
         (this.componentRef.instance as ChComponentInt).data = this.ChartDataComponent.data;
         console.log((this.componentRef.instance as ChComponentInt).data);
