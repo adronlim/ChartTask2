@@ -1,7 +1,11 @@
-<div *ngIf="!showError; else Error">
-  <div class="chart card-body" id={{chartId}}></div>
+<div *ngIf="chartId">
+  <div *ngIf="showError===false">
+    <div class="chart card-body" id={{chartId}}></div>
+  </div>
 </div>
-<ng-template #Error>
+<div> hI     {{chartId}}</div>
+
+<ng-template ngIf="!showError">
   <div class="ERROR">
     The Chart is not able to support the data. Please tick the checkbox to change the data structure.
   </div>

@@ -21,40 +21,47 @@ export class BarChartComponent implements OnInit, AfterViewInit, OnDestroy {
   chartData: any = [];
 
   constructor(private Service: ServicesService) {
-    this.chartId = ServicesService.getChartId(1111111, 9999999).toString();
 
   }
   ngOnInit() {
+    this.chartId = ServicesService.getChartId(1111111, 9999999);
+
     console.log(this.data);
     this.key = Object.keys(this.data[0]);
     console.log(this.chartId);
+
     if (this.key.length <= 3) {
       console.log(this.index);
       if (this.index == 2) {
         console.log(this.data);
         console.log(this.key[this.key.length - 1]);
+        console.log(this.chartId);
 
         this.data = this.Service.histogramData(this.data, this.key[this.key.length - 1]);   // return histogram data only (1 Dimensional Array)
         this.setting = this.Service.histogramSetting(this.data, this.setting, this.key[this.key.length - 1]);
         console.log(this.setting);
       }
+      console.log('this.chartId :\n' + this.chartId);
+
       this.showError = false;
-
     } else {
+      console.log('this.chartId :\n' + this.chartId);
+      delete this.Chart;
+      console.log('this.chartId :\n' + this.chartId);
+
       this.showError = true;
-
     }
-
+    console.log('this.chartId :\n' + this.chartId);
   }
   ngOnDestroy() {
-    if (this.Chart) {
-      this.Chart.dispose();
-    }
+    console.log('OnDestroy\nthis.chartId :\n' + this.chartId);
   }
   ngAfterViewInit(): void {
+    console.log('ngAfterView \nthis.chartId :\n' + this.chartId);
 
+    this.Chart = am4core.create(`${this.chartId}`, am4charts.XYChart);
+    console.log('ngAfterView \nthis.chartId :\n' + this.chartId);
 
-    if (this.key.length <= 3) {
       this.key = Object.keys(this.data[0]);
       this.settingKeys = Object.keys(this.setting);
       console.log(this.setting);
@@ -62,14 +69,15 @@ export class BarChartComponent implements OnInit, AfterViewInit, OnDestroy {
       console.log(this.key);
       let yFullName: string;
       let chartColor: string;
+    console.log('ngAfterView \nthis.chartId :\n' + this.chartId);
 
       console.log(this.data);
       console.log(this.setting);
       // console.log(this.setting.statName);
       console.log(this.setting[this.settingKeys[1]]);
       console.log(this.settingKeys);
-      console.log(this.chartId);
-      this.Chart = am4core.create(this.chartId, am4charts.XYChart);
+    am4core.ready(() => {
+      console.log('ngAfterView \n amCore ready\nthis.chartId :\n' + this.chartId);
 
       let chart: am4charts.XYChart;
       chart = this.Chart;
@@ -86,7 +94,7 @@ export class BarChartComponent implements OnInit, AfterViewInit, OnDestroy {
       yFullName = this.setting[this.settingKeys[1]];
       chartColor = this.setting.statColor;
       console.log(this.setting.statColor);
-// Create axes
+      // Create axes
       const categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
       categoryAxis.dataFields.category = this.key[this.key.length - 2];
       console.log(this.key);
@@ -148,13 +156,13 @@ export class BarChartComponent implements OnInit, AfterViewInit, OnDestroy {
       hoverState.properties.cornerRadiusTopLeft = 0;
       hoverState.properties.cornerRadiusTopRight = 0;
       hoverState.properties.fillOpacity = 1;
+      console.log('ngAfterView \nthis.chartId :\n' + this.chartId);
 
       // Cursor
       chart.cursor = new am4charts.XYCursor();
-    } else {
-      if (this.Chart) {
-        this.Chart.dispose();
-      }
+    });
+    console.log('ngAfterView \nthis.chartId :\n' + this.chartId);
+
     }
-  }
+
 }

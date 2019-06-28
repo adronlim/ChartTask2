@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
+import {time} from '@amcharts/amcharts4/core';
 
 @Injectable({
   providedIn: 'root'
@@ -29,9 +30,17 @@ export class ServicesService {
 //******  To set the variable of the key   ******
 
   static getChartId(min, max) {
+    // console.log(time.getTime());
+    // console.log(typeof  time);
+    let hoursMinutes = time.getTime();
+    let Times = parseInt(hoursMinutes.toString(), 10);
+    // console.log(Times);
+    let influencer = Times % 100;
     min = Math.ceil(min);
     max = Math.floor(max);
-    return (Math.floor(Math.random() * (max - min)) + min).toString(); //The maximum is exclusive and the minimum is inclusive
+    // console.log(influencer);
+    // console.log((Math.floor(Math.random() * (max - min )) + min));
+    return (Math.abs(Math.floor(Math.random() * (max - min - influencer)) + min).toString()); //The maximum is exclusive and the minimum is inclusive
   }
 
 //   indexB = true for Multiple Keys, false for single Key
