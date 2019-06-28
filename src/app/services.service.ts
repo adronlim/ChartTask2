@@ -1,18 +1,19 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {BarChartComponent} from './bar-chart/bar-chart.component';
-import {PieChartComponent} from './pie-chart/pie-chart.component';
-import {StackedBarChartComponent} from './stacked-bar-chart/stacked-bar-chart.component';
-
-// import {Heroes} from '../assets/Heroes';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ServicesService {
-  Data: any;
+  Data2D: any;
+  Data3D: any;
   key: any;
+  statKey: string;
+  statKeys: [];
+  settingKeys: [];
+
+
   constructor(private httpClient?: HttpClient) {
     const a = [1, 2, 3, 4];
     console.log('a  \n');
@@ -22,7 +23,37 @@ export class ServicesService {
     console.log(typeof [[], []]);
     const c = {};
     console.log('c  \n' + typeof {});
-    console.log(this.Data);
+    console.log(this.Data2D);
+  }
+
+//******  To set the variable of the key   ******
+
+  static getChartId(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return (Math.floor(Math.random() * (max - min)) + min).toString(); //The maximum is exclusive and the minimum is inclusive
+  }
+
+//   indexB = true for Multiple Keys, false for single Key
+  setKeys(indexB: boolean, Keys: any) {
+    if (indexB == true) {
+      this.statKeys = Keys;
+    } else {
+      this.statKey = Keys;
+    }
+  }
+
+  //
+  getKeys(data) {
+    return Object.keys(data);
+  }
+
+  setData2D() {
+
+  }
+
+  setData3D(rawData: any) {
+    this.Data3D = rawData;
   }
   getHeroes(): Observable<any> {
     return this.httpClient.get<any>('../assets/Heroes.json');
@@ -32,7 +63,7 @@ export class ServicesService {
     return this.httpClient.get<any>(url);
   }
 
-  // getChartData(component: Array<any>, dataFunc) {
+  // get2DChartData(component: Array<any>, dataFunc) {
   //   // this.Data = dataFunc();
   //   // return new ChartDataComponent( component, this.Data);
   // }
@@ -50,16 +81,11 @@ export class ServicesService {
   get2dHeroes() {
     return this.httpClient.get<any>('../assets/Heroes.json');
   }
-  getChartComponent() {
-    return [BarChartComponent, PieChartComponent, BarChartComponent, StackedBarChartComponent];
-  }
-
   dataSample() {
     let newData;
     newData = [1, 2, 3, 4, 5, 6, 7, 8, 8, 9, 0];
     return newData;
   }
-
   findKeyAvailable(rawData: [], key1, key2?, key3?): boolean {  // Find the Object key from object-typed RAW Data & 2D use
     let data;
     let keyArray = [];
@@ -80,6 +106,14 @@ export class ServicesService {
     return result;
   }
 
+  // returnDataValue(index, statKey, data, sortData: boolean) {
+  //   if (index == -1) {
+  //     console.log(data);
+  //     return this.get2DChartData(data, this.statKey, sortData, index);
+  //   } else if (index == 1) {
+  //     return data;
+  //   }
+  // }
   getDatabyKey(data, key1: string | number, key2?: string | number, key3?: string | number) { // Get intended data(Object) by key
     const ObjKey = Object.keys(data);
     let keyArray = [];
@@ -94,11 +128,14 @@ export class ServicesService {
       }
     }
     // console.log(newdata);
+    this.Data3D = newdata;
     return newdata;
   }
 
-  getChartData(data2d: any, key: string, sortData: boolean, index: number) {
-    // Process raw data into 2D data for Chart Display
+
+  get2DChartData(rawData: any, key: string, sortData: boolean/*, index: number*/) {
+    // Process raw data into ### 2D data ### for Chart Display
+    // Only accept '[]' format for 2D rawData
     // To get intended object property(s) by key
     let data2D = [[], []];
     let newData1 = [];
@@ -109,17 +146,18 @@ export class ServicesService {
     // console.log(data2d);
     // console.log(data2d[0]);
 
-    let ObjKeyH = Object.keys(data2d[0][0]);    // Get Array Keys of Hero Stat
-    let ObjSettingKey = Object.keys(data2d[1][0]); // Get Array keys of StatSetting(Configuration)
-    // console.log(ObjSettingKey);
+    let ObjKeyH = Object.keys(rawData[0][0]);    // Get Array Keys of Hero Stat
+    let ObjSettingKey = Object.keys(rawData[1][0]); // Get Array keys of StatSetting(Configuration)
+    console.log(ObjSettingKey);
     // console.log(key);
     // console.log(ObjKeyH);
-    dataKey = Object.keys(data2d);      // Get key from data2d
+    dataKey = Object.keys(rawData);      // Get key from data2d
     let stateKey = ObjKeyH.find(e => {
       return e == key;
     });
     if (stateKey === undefined || stateKey === null) {
-      // console.log('%c The stateKey is not FOUND!!!', 'background: #222; color: #bada55');
+      window.alert('The stateKey is not FOUND!!! \n line 144 Service');
+      console.log('%c The stateKey is not FOUND!!!', 'background: #222; color: #bada55');
       return;
     }
     //Chart Bar Chart & Pie Chart
@@ -129,7 +167,7 @@ export class ServicesService {
         // console.log(keyI);
         // console.log(data2D);
         // console.log(data2d[0]);
-        data2d[0].forEach(e1 => {
+        rawData[0].forEach(e1 => {
           newObjH = {[Object.keys(e1)[0]]: e1[Object.keys(e1)[0]], [Object.keys(e1)[1]]: e1[Object.keys(e1)[1]], [stateKey]: e1[stateKey]};
           newData1.push(newObjH);
           // console.log(newObjH);
@@ -144,7 +182,7 @@ export class ServicesService {
       // Process Configuration info for Chart
       else if (keyI == 1) {
         // console.log(keyI);
-        data2d[1].forEach(e2 => {
+        rawData[1].forEach(e2 => {
           // console.log(e2);
           if (e2.statID == stateKey) {
             newObjSet = {
@@ -164,43 +202,43 @@ export class ServicesService {
     data2D[0] = (newData1);
     data2D[1] = newData2[0];
     // console.log(data2D[1]);
-    if (index == 2) {
-      // Histogram Chart
-      data2D = this.histogramData(data2D, key);   // return histogram data only (1 Dimensional Array)
-    }
+    // if (index == 2) {
+    //   // Histogram Chart
+    //   data2D = this.histogramData(data2D, key);   // return histogram data only (1 Dimensional Array)
+    // }
     // console.log(data2D);
     return data2D;
   }
 
   histogramData(rawData: any, key: any) { // rawData is *** 2 Dimensional *** Array
-    let hisData = [[], []];
+    let hisData = [];
     let hisKeys = ['degree', 'freq'];
     let i = 0;  // loop index
     let h = 0;  // index that count element number of hisData
     // Count the frequency for histogram chart
-    // console.log(hisData);
-    // console.log(rawData);
-    let settingKeys = Object.keys(rawData[1]);
-    const ObjKeyH = Object.keys(rawData[0][0]);
-    // console.log(ObjKeyH);
+    console.log(hisData);
+    console.log(rawData);
+    // let settingKeys = Object.keys(Setting);
+    const ObjKeyH = Object.keys(rawData[0]);
+    console.log(ObjKeyH);
     const stateKey = ObjKeyH.find(e => {
       return e == key;
     }) || 'KEY NOT FOUND';
-    // console.log(stateKey);
-    for (let rData of rawData[0]) {
-      if (hisData[0][h] == undefined || hisData[0][h] == null) {
-        // console.log(rData[stateKey]);
-        hisData[0].push({[hisKeys[0]]: rData[stateKey], [hisKeys[1]]: 0});
-        // console.log(hisData[0][h]);
-        hisData[0][h][hisKeys[1]] = 1;
-        // console.log(hisData[0][h]);
-      } else if (rawData[0][i + 1] === undefined || rawData[i + 1] === null) {
-        // console.log('Histogram Component : \n THE END OF RAWDATA LOOP');
+    console.log(stateKey);
+    for (let rData of rawData) {
+      if (hisData[h] == undefined || hisData[h] == null) {
+        console.log(rData[stateKey]);
+        hisData.push({[hisKeys[0]]: rData[stateKey], [hisKeys[1]]: 0});
+        console.log(hisData[h]);
+        hisData[h][hisKeys[1]] = 1;
+        console.log(hisData[h]);
+      } else if (rawData[i + 1] === undefined || rawData[i + 1] === null) {
+        console.log('Histogram Component : \n THE END OF RAWDATA LOOP');
         break;
       }
-      if (rData[stateKey] === rawData[0][i + 1][stateKey]) {
-        hisData[0][h][hisKeys[1]] += 1;
-        // console.log(hisData);
+      if (rData[stateKey] === rawData[i + 1][stateKey]) {
+        hisData[h][hisKeys[1]] += 1;
+        console.log(hisData);
       } else {
         h++;
         // this.hisData[h].key = rData[this.Hkey];
@@ -208,25 +246,26 @@ export class ServicesService {
       }
       i++;
     }
-    hisData[0].sort((a, b) => a[stateKey] - b[stateKey]);
-    hisData[0].unshift({[hisKeys[0]]: null, [hisKeys[1]]: 0});
-    hisData[0].push({[hisKeys[0]]: null, [hisKeys[1]]: 0});
-    let object = [];
-    object.push({
-      'hisID': 'histogram',
-      [settingKeys[settingKeys.length - 2]]: stateKey,
-      [settingKeys[settingKeys.length - 1]]: rawData[1][settingKeys[settingKeys.length - 1]]
-    });
-    // console.log(hisData[1]);
-    // console.log(object);
-    hisData[1] = object[0];
-    // console.log(hisData);
-    // console.log(settingKeys);
-    // console.log(settingKeys[settingKeys.length - 2]);
-    // console.log(stateKey);
-    // console.log(rawData[1][settingKeys[settingKeys.length - 1]]);
-    // console.log(hisData);
+    hisData.sort((a, b) => a[stateKey] - b[stateKey]);
+    hisData.unshift({[hisKeys[0]]: null, [hisKeys[1]]: 0});
+    hisData.push({[hisKeys[0]]: null, [hisKeys[1]]: 0});
+    console.log(hisData);
     return [...hisData];  // Return Array with same Dimension
+  }
+
+  histogramSetting(hisData: any, Setting: any, key: any) {
+    let settingKeys = Object.keys(Setting);
+    let object: {};
+    console.log(settingKeys[settingKeys.length - 1]);
+    console.log(Setting[settingKeys[settingKeys.length - 1]]);
+
+    object = {
+      'hisID': 'Histogram',
+      [settingKeys[settingKeys.length - 2]]: key,
+      [settingKeys[settingKeys.length - 1]]: Setting[settingKeys[settingKeys.length - 1]]
+    };
+    console.log(object);
+    return object;
   }
 
   sortDataFunc(data, keyOrIndex: string | number) {  //Sorting for ***Single Dimension Array!!! *** only

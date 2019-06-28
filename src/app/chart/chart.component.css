@@ -1,11 +1,11 @@
 .card {
-  height: 1000px;
+  height: 900px;
   max-width: 98%;
 }
 
-.ERROR {
-  height: 400px;
-  width: inherit;
+.container {
+  height: 950px;
+  width: 100%;
   text-align-all: center;
   padding: auto;
   margin: auto;

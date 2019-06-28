@@ -8,6 +8,7 @@ import {NavBarComponent} from './nav-bar/nav-bar.component';
 import {BarChartComponent} from './bar-chart/bar-chart.component';
 import {PieChartComponent} from './pie-chart/pie-chart.component';
 import {HistogramChartComponent} from './histogram-chart/histogram-chart.component';
+import {StackedBarChartComponent} from './stacked-bar-chart/stacked-bar-chart.component';
 
 import {DashboardComponent} from './dashboard/dashboard.component';
 import {SideBarComponent} from './side-bar/side-bar.component';
@@ -15,7 +16,6 @@ import {HttpClientModule} from '@angular/common/http';
 import {FormsModule} from '@angular/forms';
 import {ServicesService} from './services.service';
 import {ChartModule} from './chart/chart.module';
-import {StackedBarChartComponent} from './stacked-bar-chart/stacked-bar-chart.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +27,7 @@ import {StackedBarChartComponent} from './stacked-bar-chart/stacked-bar-chart.co
     HistogramChartComponent,
     DashboardComponent,
     SideBarComponent,
-    StackedBarChartComponent,
+    StackedBarChartComponent
   ],
   imports: [
     BrowserModule,
@@ -39,7 +39,8 @@ import {StackedBarChartComponent} from './stacked-bar-chart/stacked-bar-chart.co
   entryComponents: [
     BarChartComponent,
     PieChartComponent,
-    HistogramChartComponent
+    HistogramChartComponent,
+    StackedBarChartComponent
   ]
   ,
   exports: [],

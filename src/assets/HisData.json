@@ -1,0 +1,34 @@
+[
+  {
+    "Age": "20 - 29",
+    "Frequency": 2
+  },
+  {
+    "Age": "30 - 39",
+    "Frequency": 4
+  },
+  {
+    "Age": "40 - 49",
+    "Frequency": 4
+  },
+  {
+    "Age": "50 - 59",
+    "Frequency": 5
+  },
+  {
+    "Age": "60 - 69",
+    "Frequency": 3
+  },
+  {
+    "Age": "70 - 79",
+    "Frequency": 1
+  },
+  {
+    "Age": "80 - 89",
+    "Frequency": 0
+  },
+  {
+    "Age": "90 - 99",
+    "Frequency": 1
+  }
+]

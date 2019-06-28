@@ -2,6 +2,9 @@ import {AfterViewInit, Component, ElementRef, Input, OnChanges, OnDestroy, OnIni
 import {ChartDirective} from '../chart-directive.directive';
 import {ChartDataComponent} from '../ChartData';
 import {ServicesService} from '../services.service';
+import {BarChartComponent} from '../bar-chart/bar-chart.component';
+import {StackedBarChartComponent} from '../stacked-bar-chart/stacked-bar-chart.component';
+import {PieChartComponent} from '../pie-chart/pie-chart.component';
 
 @Component({
   selector: 'app-chart',
@@ -47,10 +50,15 @@ export class ChartComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     return this._idComponentChart;
   }
 
-  constructor(/*private componentFactoryResolver: ComponentFactoryResolver, */private Service: ServicesService,) {
-    this.chartComponents = this.Service.getChartComponent();
+  constructor(/*private componentFactoryResolver: ComponentFactoryResolver, */private Service: ServicesService) {
+    this.chartComponents = ChartComponent.getChartComponent();
+    console.log(this.chartComponents);
     // console.log(this._idComponentChart);
     // console.log(this.chartData);
+  }
+
+  static getChartComponent() {
+    return [BarChartComponent, PieChartComponent, BarChartComponent, StackedBarChartComponent];
   }
 
   ngOnInit() {
@@ -62,8 +70,15 @@ export class ChartComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         this.chartData = data;
         console.log(this.chartData);
         this.setParameter(); // To get value of currentIndex & multiYvalue
+        this.processDatabyIDindex();
+
+        if (!this.is3D && this.first) {
+          this.triggerButton = false;
+          console.log('TRIGGER BUTTON IS FALSE!!!!');
+        }
+        this.loadChartComponent(this.processedData);
+
         console.log('TRIGGER BUTTON IS ', this.triggerButton);
-        this.processDatabyID(this.idComponentDB);
         console.log(this.keySlength > 3 === this.is3D);
         console.log('keySlength >3 : \n', this.keySlength > 3);
         console.log('is3D  : \n', this.is3D);
@@ -71,11 +86,7 @@ export class ChartComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         console.log(this.HeroesDataS);
         console.log('HEY!');
 
-        this.loadChartComponent(this.processedData);
-        if (!this.is3D && this.first) {
-          this.triggerButton = false;
-          console.log('TRIGGER BUTTON IS FALSE!!!!');
-        }
+
         this.first = false;
         this.showError = false;
       }
@@ -88,13 +99,8 @@ export class ChartComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     // let detectTo3dStructure = (changes.to3dStructure.previousValue !== undefined || changes.to3dStructure.previousValue !== null);
     // let radioChanged = (changes.to3dStructure.previousValue != changes.to3dStructure.currentValue) || detectTo3dStructure;
     if (idChanged) {
-      if (this.is3D == this.keySlength > 3) {
-        this.showError = false;
-        this.loadChartComponent(this.processedData);
-      } else {
-        this.showError = true;
-        console.log('%cshow ERROR!!!!!!!!!!!!!!!!!!', 'background: #222; color: red');
-      }
+      this.setParameter();
+      this.loadChartComponent(this.processedData);
     }
   }
 
@@ -119,17 +125,11 @@ export class ChartComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       console.log(ChartSetting);
       console.log(this.ChartDataComponent);
     }
-    this.ChartDataComponent = new ChartDataComponent(this.chartComponents[this.currentIndex], chartDataParameter, ChartSetting, this.key);
+    console.log(this.chartComponents);
+    this.ChartDataComponent = new ChartDataComponent(this.chartComponents[this.currentIndex], chartDataParameter, ChartSetting, this.key, this.currentIndex);
   }
 
-  returnDataValue(index, data, sortData: boolean) {
-    if (index == -1) {
-      console.log(data);
-      return this.Service.getChartData(data, this.statKey, sortData, this.currentIndex);
-    } else if (index == 1) {
-      return data;
-    }
-  }
+
   setParameter() {
     console.log('%csetParameter!!!!!!!!!!!!!!!!!!', 'background: #222; color: red');
     // this.firstChecked = false;
@@ -164,31 +164,40 @@ export class ChartComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     }
   }
 
-  processDatabyID(id: string) {
+  processDatabyIDindex() {
     this.HeroesDataS = this.Service.getDatabyKey(this.chartData, 'HEROES', 'statSetting');
     console.log(this.processedData);
 
-    switch (id) {
-      case 'BarChartComponent':
-        this.Data2d = this.returnDataValue(-1, this.HeroesDataS, true);
-        this.processedData = this.Data2d;
-        break;
-      case 'PieChartComponent':
-        this.DataPie = this.returnDataValue(-1, this.HeroesDataS, false);
-        this.processedData = this.DataPie;
-        break;
-      case 'HistogramChartComponent':
-        this.DataHis = this.returnDataValue(-1, this.HeroesDataS, true);
-        console.log(this.DataHis);
-        this.processedData = this.DataHis;
-        break;
-      case 'StackedBarChartComponent':
-        this.Data3d = this.returnDataValue(1, this.HeroesDataS, false);
-        this.processedData = this.Data3d;
-        break;
-      default:
-        return;
+    if (this.currentIndex <= 2) {
+      this.processedData = this.Service.get2DChartData(this.HeroesDataS, this.statKey, true);
+      console.log('The data is 2D');
+    } else {
+      this.processedData = this.HeroesDataS;
+      console.log('The data is 3D');
     }
+    console.log(this.processedData);
+
+    // switch (id) {
+    //   case 'BarChartComponent':
+    //     this.Data2d = this.returnDataValue(-1, this.HeroesDataS, true);
+    //     this.processedData = this.Data2d;
+    //     break;
+    //   case 'PieChartComponent':
+    //     this.DataPie = this.returnDataValue(-1, this.HeroesDataS, false);
+    //     this.processedData = this.DataPie;
+    //     break;
+    //   case 'HistogramChartComponent':
+    //     this.DataHis = this.returnDataValue(-1, this.HeroesDataS, true);
+    //     console.log(this.DataHis);
+    //     this.processedData = this.DataHis;
+    //     break;
+    //   case 'StackedBarChartComponent':
+    //     this.Data3d = this.Service.returnDataValue(1, this.HeroesDataS, false);
+    //     this.processedData = this.Data3d;
+    //     break;
+    //   default:
+    //     return;
+    // }
     this.getProcessedDataKeys = Object.keys(this.processedData[0][0]);
     this.keySlength = this.getProcessedDataKeys.length;
     console.log(this.getProcessedDataKeys);
@@ -201,30 +210,17 @@ export class ChartComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
 
     let valid = this.keySlength > 3 === this.is3D;
     let valid2 = valid === this.triggerButton;
-    // console.log(this.to3dStructure);
-    // console.log(this.keySlength);
-    // console.log(valid);
-    // console.log(this.triggerButton);
-    // console.log((valid) === this.triggerButton);
-    // console.log('keySlength >3 : \n', this.keySlength > 3);
-    // console.log('is3D  : \n', this.is3D);
-    if (!(this.is3D == this.keySlength > 3)) {
-      this.showError = true;
+
+    if (this.triggerButton) {
+      this.processedData = this.HeroesDataS;
     } else {
-      if (this.keySlength == 2) {
-
-      } else if (this.keySlength == 3) {
-
-      }
-
-      console.log('HELLLLLLOOO');
-      // this.setParameter();
-      this.showError = false;
-
-      this.loadChartComponent(this.processedData);
-
+      this.processedData = this.Service.get2DChartData(this.HeroesDataS, this.statKey, true);
+      console.log('The data is 2D');
     }
+    this.loadChartComponent(this.processedData);
+
   }
+
 
   // changeNgetData(tickedInput: boolean){
   //   if (tickedInput) {
