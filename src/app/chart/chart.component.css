@@ -1,16 +1,41 @@
 .card {
-  height: 900px;
+  /*height: 750px;*/
   max-width: 98%;
 }
 
 .container {
-  height: 950px;
+  height: 750px;
   width: 100%;
   text-align-all: center;
   padding: auto;
-  margin: auto;
+  margin: auto auto 50px auto;
+
 }
 
+.word {
+  position: relative;
+  top: 140px;
+  margin-bottom: 50px;
+}
+
+.word div {
+  height: 150px;
+  width: 100%;
+}
+
+.container1 {
+  height: 500px;
+  width: 500px;
+  text-align-all: center;
+  padding: auto;
+  margin: auto;
+  display: inline-block;
+}
+
+.noDisplay {
+  /*position: top;*/
+  display: none;
+}
 .btn-dark {
   margin: auto;
   width: 140px;

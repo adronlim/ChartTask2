@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
 import {ServicesService} from '../services.service';
@@ -8,29 +8,61 @@ import {ServicesService} from '../services.service';
   templateUrl: './bar-chart.component.html',
   styleUrls: ['./bar-chart.component.css']
 })
-export class BarChartComponent implements OnInit, AfterViewInit, OnDestroy {
+export class BarChartComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
   @Input() data: any;
+  // @Output() Error = new EventEmitter();
   setting: any;
   key: any;
   settingKeys: any;
-  chartId: any;
+  chartId: string;
   index: number;
-  showError: boolean;
+  // showError: boolean;
   // stack = false;
   Chart: am4charts.XYChart;
   chartData: any = [];
+
+  // @ViewChild('E1') chartE: ElementRef;
 
   constructor(private Service: ServicesService) {
 
   }
   ngOnInit() {
-    this.chartId = ServicesService.getChartId(1111111, 9999999);
+    ServicesService.getChartId(1111111, 9999999).subscribe(id => {
+      this.chartId = id;
+    });
 
     console.log(this.data);
     this.key = Object.keys(this.data[0]);
     console.log(this.chartId);
+    if (this.key.length > 3) {
+    }
+
+    console.log('this.chartId :\n' + this.chartId);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log('%cinput changed!!!!!!!!!! BARCHARTCOMPONENT', 'background: #222; color: #bada55');
+    console.log(changes);
+  }
+
+  ngOnDestroy() {
+    console.log('OnDestroy\nthis.chartId :\n' + this.chartId);
+    delete this.Chart;
+
+  }
+
+  ngAfterViewInit(): void {
+    // console.log(this.chartE);
+    // console.log(this.chartE.nativeElement);
+    // let a = this.chartE.nativeElement.querySelector(this.chartId);
+    // console.log(a);
+    // this.chartId = ServicesService.getChartId(1111111, 9999999).subscribe(data =>{
+    //
+    // });
 
     if (this.key.length <= 3) {
+      console.log(this.data);
+      console.log(this.key.length);
       console.log(this.index);
       if (this.index == 2) {
         console.log(this.data);
@@ -43,24 +75,10 @@ export class BarChartComponent implements OnInit, AfterViewInit, OnDestroy {
       }
       console.log('this.chartId :\n' + this.chartId);
 
-      this.showError = false;
-    } else {
-      console.log('this.chartId :\n' + this.chartId);
-      delete this.Chart;
-      console.log('this.chartId :\n' + this.chartId);
-
-      this.showError = true;
-    }
-    console.log('this.chartId :\n' + this.chartId);
-  }
-  ngOnDestroy() {
-    console.log('OnDestroy\nthis.chartId :\n' + this.chartId);
-  }
-  ngAfterViewInit(): void {
-    console.log('ngAfterView \nthis.chartId :\n' + this.chartId);
-
-    this.Chart = am4core.create(`${this.chartId}`, am4charts.XYChart);
-    console.log('ngAfterView \nthis.chartId :\n' + this.chartId);
+      console.log('ngAfterView \nthis.chartId :\n' + this.chartId);
+      console.log(this.chartId);
+      this.Chart = am4core.create(this.chartId, am4charts.XYChart);
+      console.log('ngAfterView \nthis.chartId :\n' + this.chartId);
 
       this.key = Object.keys(this.data[0]);
       this.settingKeys = Object.keys(this.setting);
@@ -69,100 +87,107 @@ export class BarChartComponent implements OnInit, AfterViewInit, OnDestroy {
       console.log(this.key);
       let yFullName: string;
       let chartColor: string;
-    console.log('ngAfterView \nthis.chartId :\n' + this.chartId);
+      console.log('ngAfterView \nthis.chartId :\n' + this.chartId);
 
       console.log(this.data);
       console.log(this.setting);
       // console.log(this.setting.statName);
       console.log(this.setting[this.settingKeys[1]]);
       console.log(this.settingKeys);
-    am4core.ready(() => {
-      console.log('ngAfterView \n amCore ready\nthis.chartId :\n' + this.chartId);
+      am4core.ready(() => {
+        console.log('ngAfterView \n amCore ready\nthis.chartId :\n' + this.chartId);
 
-      let chart: am4charts.XYChart;
-      chart = this.Chart;
-      chart.percentWidth = 90;
-      chart.align = 'center';
-      chart.scrollbarX = new am4core.Scrollbar();
-      chart.align = 'center';
-      chart.responsive.enabled = true;
-      chart.fontFamily = 'Calibri, serif';
-      chart.fontWeight = 'lighter';
-      this.chartData = [...this.data];
-      chart.data = this.chartData;
-      console.log(chart.data);
-      yFullName = this.setting[this.settingKeys[1]];
-      chartColor = this.setting.statColor;
-      console.log(this.setting.statColor);
-      // Create axes
-      const categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
-      categoryAxis.dataFields.category = this.key[this.key.length - 2];
-      console.log(this.key);
-      categoryAxis.fontSize = '20px';
-      categoryAxis.renderer.grid.template.location = 0;
-      categoryAxis.renderer.minGridDistance = 30;
-      categoryAxis.renderer.labels.template.horizontalCenter = 'right';
-      categoryAxis.renderer.labels.template.verticalCenter = 'middle';
-      if (this.settingKeys[0] == 'hisID') {
-        categoryAxis.renderer.labels.template.rotation = 0;
-      } else {
-        categoryAxis.renderer.labels.template.rotation = 270;
-      }
-      categoryAxis.tooltip.disabled = true;
-      categoryAxis.renderer.minHeight = 110;
+        let chart: am4charts.XYChart;
+        chart = this.Chart;
+        chart.percentWidth = 90;
+        chart.align = 'center';
+        chart.scrollbarX = new am4core.Scrollbar();
+        chart.align = 'center';
+        chart.responsive.enabled = true;
+        chart.fontFamily = 'Calibri, serif';
+        chart.fontWeight = 'lighter';
+        this.chartData = [...this.data];
+        chart.data = this.chartData;
+        console.log(chart.data);
+        yFullName = this.setting[this.settingKeys[1]];
+        chartColor = this.setting.statColor;
+        console.log(this.setting.statColor);
+        // Create axes
+        const categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+        categoryAxis.dataFields.category = this.key[this.key.length - 2];
+        console.log(this.key);
+        categoryAxis.fontSize = '20px';
+        categoryAxis.renderer.grid.template.location = 0;
+        categoryAxis.renderer.minGridDistance = 30;
+        categoryAxis.renderer.labels.template.horizontalCenter = 'right';
+        categoryAxis.renderer.labels.template.verticalCenter = 'middle';
+        if (this.settingKeys[0] == 'hisID') {
+          categoryAxis.renderer.labels.template.rotation = 0;
+        } else {
+          categoryAxis.renderer.labels.template.rotation = 270;
+        }
+        categoryAxis.tooltip.disabled = true;
+        categoryAxis.renderer.minHeight = 110;
 
-      const valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-      valueAxis.fontSize = '20px';
+        const valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+        valueAxis.fontSize = '20px';
 
-      const topContainer = chart.chartContainer.createChild(am4core.Container);
-      topContainer.layout = 'absolute';
-      topContainer.toBack();
-      topContainer.paddingBottom = 15;
-      topContainer.width = am4core.percent(100);
+        const topContainer = chart.chartContainer.createChild(am4core.Container);
+        topContainer.layout = 'absolute';
+        topContainer.toBack();
+        topContainer.paddingBottom = 15;
+        topContainer.width = am4core.percent(100);
 
-      const Title = topContainer.createChild(am4core.Label);
-      Title.text = yFullName;
-      Title.fontSize = '40px';
-      Title.fontWeight = '600';
-      Title.align = 'center';
-      Title.paddingBottom = 60;
+        const Title = topContainer.createChild(am4core.Label);
+        Title.text = yFullName;
+        Title.fontSize = '40px';
+        Title.fontWeight = '600';
+        Title.align = 'center';
+        Title.paddingBottom = 60;
 
-      // Create series
-      const series = chart.series.push(new am4charts.ColumnSeries());
-      series.sequencedInterpolation = true;
-      series.dataFields.valueY = this.key[this.key.length - 1];
-      console.log(this.key[this.key.length - 1]);
-      series.dataFields.categoryX = this.key[this.key.length - 2];
-      console.log(this.key[this.key.length - 2]);
-      // series.fontSize = '50px';
-      series.name = yFullName;
-      console.log(yFullName);
-      series.fill = am4core.color(chartColor);
-      // series.yAxis =
-      series.columns.template.tooltipText = '{categoryX}: [bold]{valueY}[/]';
-      series.columns.template.strokeWidth = 0;
-      series.tooltip.pointerOrientation = 'vertical';
-      series.columns.template.column.cornerRadiusTopLeft = 10;
-      series.columns.template.column.cornerRadiusTopRight = 10;
-      series.columns.template.fillOpacity = .8;
+        // Create series
+        const series = chart.series.push(new am4charts.ColumnSeries());
+        series.sequencedInterpolation = true;
+        series.dataFields.valueY = this.key[this.key.length - 1];
+        console.log(this.key[this.key.length - 1]);
+        series.dataFields.categoryX = this.key[this.key.length - 2];
+        console.log(this.key[this.key.length - 2]);
+        // series.fontSize = '50px';
+        series.name = yFullName;
+        console.log(yFullName);
+        series.fill = am4core.color(chartColor);
+        // series.yAxis =
+        series.columns.template.tooltipText = '{categoryX}: [bold]{valueY}[/]';
+        series.columns.template.strokeWidth = 0;
+        series.tooltip.pointerOrientation = 'vertical';
+        series.columns.template.column.cornerRadiusTopLeft = 10;
+        series.columns.template.column.cornerRadiusTopRight = 10;
+        series.columns.template.fillOpacity = .8;
 
-      const columnTemplate = series.columns.template;
-      columnTemplate.strokeWidth = 1;
-      columnTemplate.strokeOpacity = .5;
-      columnTemplate.width = am4core.percent(100);
+        const columnTemplate = series.columns.template;
+        columnTemplate.strokeWidth = 1;
+        columnTemplate.strokeOpacity = .5;
+        columnTemplate.width = am4core.percent(100);
 
-      // on hover, make corner radiuses bigger
-      const hoverState = series.columns.template.column.states.create('hover');
-      hoverState.properties.cornerRadiusTopLeft = 0;
-      hoverState.properties.cornerRadiusTopRight = 0;
-      hoverState.properties.fillOpacity = 1;
+        // on hover, make corner radiuses bigger
+        const hoverState = series.columns.template.column.states.create('hover');
+        hoverState.properties.cornerRadiusTopLeft = 0;
+        hoverState.properties.cornerRadiusTopRight = 0;
+        hoverState.properties.fillOpacity = 1;
+        console.log('ngAfterView \nthis.chartId :\n' + this.chartId);
+
+        // Cursor
+        chart.cursor = new am4charts.XYCursor();
+      });
       console.log('ngAfterView \nthis.chartId :\n' + this.chartId);
+      this.Service.sendMessageError(false);
 
-      // Cursor
-      chart.cursor = new am4charts.XYCursor();
-    });
-    console.log('ngAfterView \nthis.chartId :\n' + this.chartId);
-
+    } else {
+      console.log('this.chartId :\n' + this.chartId);
+      this.Service.sendMessageError(true);
     }
+
+
+  }
 
 }

@@ -1,8 +1,3 @@
-<div *ngIf="!showError; else Error">
-  <div class="chart card-body" id="{{setting.statName + 'Pie'}}"></div>
-</div>
-<ng-template #Error>
-  <div class="ERROR">
-    The Chart is not able to support the data. Please tick the checkbox to change the data structure.
-  </div>
-</ng-template>
+<span *ngIf="chartId">
+  <div class="chart card-body" id="{{chartId}}"></div>
+</span>

@@ -3,6 +3,7 @@ import {AfterViewInit, Component, Input, OnDestroy, OnInit} from '@angular/core'
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
 import am4themes_animated from '@amcharts/amcharts4/themes/animated';
+import {ServicesService} from '../services.service';
 
 /* Chart code */
 // Themes begin
@@ -22,8 +23,10 @@ export class PieChartComponent implements OnInit, OnDestroy, AfterViewInit {
   setting: any;
   key: any;
   chartData: any = [];
+  chartId: string;
   showError: boolean;
-  constructor() {
+
+  constructor(private Service: ServicesService) {
   }
 
   ngOnDestroy() {
@@ -33,6 +36,9 @@ export class PieChartComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit() {
+    ServicesService.getChartId(1111111, 9999999).subscribe(id => {
+      this.chartId = id;
+    });
     this.key = Object.keys(this.data[0]);
     this.chartData = [...this.data];
   }
@@ -40,7 +46,7 @@ export class PieChartComponent implements OnInit, OnDestroy, AfterViewInit {
   ngAfterViewInit() {
     try {
       // Create chart instance
-      this.Chart = am4core.create(this.setting.statName + 'Pie', am4charts.PieChart);
+      this.Chart = am4core.create(this.chartId, am4charts.PieChart);
 
     } catch (e) {
       console.log(e);
@@ -96,11 +102,10 @@ export class PieChartComponent implements OnInit, OnDestroy, AfterViewInit {
       this.Chart.legend = new am4charts.Legend();
       console.log(this.chartData);
       this.Chart.data = [...this.chartData];
+      this.Service.sendMessageError(false);
+
     } else {
-      this.showError = true;
-      if (this.Chart) {
-        this.Chart.dispose();
-      }
+      this.Service.sendMessageError(true);
     }
   }
 

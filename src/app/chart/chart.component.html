@@ -1,19 +1,25 @@
 <div *ngIf="_idComponentChart && chartData">
-  <div class="container">
-    <span class="card">
-    <h3>Hero Statistics</h3>
-    <span>
-      <button (click)="check()" [disabled]="!triggerButton" class="btn-dark" name="2D"
-              type="button">2D Data Structure</button>
-      <button (click)="check()" [disabled]="triggerButton" class="btn-dark" name="3D"
-              type="button">3D Data Structure</button>
-    </span>
-    <div *ngIf="!showError" class="container">
-        <ng-template *appChartDirective="ChartDataComponent" appChartDirective></ng-template>
-    </div>
-      <!--    <span>{{displayTemplate()}}<</span>-->
-  </span>
-  </div>
+  <h3>Hero Statistics</h3>
+  <span>
+        <button (click)="check()" [disabled]="!triggerButton" class="btn-dark" name="2D"
+                type="button">2D Data Structure</button>
+        <button (click)="check()" [disabled]="triggerButton" class="btn-dark" name="3D"
+                type="button">3D Data Structure</button>
 
+      </span>
+  <div [ngStyle]="styleHeight" class="card">
+
+    <span [ngStyle]="styleHeight" class="container">
+
+      <div *ngIf="showError" class="word">
+        <div>The Chart is not able to support the data. Please tick the checkbox to change the data structure.</div>
+      </div>
+      <div [ngClass]="styleChart">
+          <ng-template *appChartDirective="ChartDataComponent" appChartDirective></ng-template>
+      </div>
+
+    </span>
+
+  </div>
 
 </div>

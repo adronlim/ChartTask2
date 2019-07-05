@@ -32,7 +32,9 @@ export class StackedBarChartComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   ngOnInit() {
-    this.chartId = ServicesService.getChartId(1111111, 9999999).toString();
+    ServicesService.getChartId(1111111, 9999999).subscribe(id => {
+      this.chartId = id;
+    });
     this.statKeys = Object.keys(this.data[0]);
     this.idKey = this.statKeys[0];
     this.nameKey = this.statKeys[1];
@@ -112,6 +114,7 @@ export class StackedBarChartComponent implements OnInit, AfterViewInit, OnDestro
       let series;
       let tTip = '';
       for (let h = 3; h > 0; h--) {
+        console.log('ToolTip');
         series = chart.series.push(new am4charts.ColumnSeries());
         series.name = this.statKeys[0];
         series.dataFields.valueY = this.statKeys[this.statKeys.length - h];
@@ -139,12 +142,11 @@ export class StackedBarChartComponent implements OnInit, AfterViewInit, OnDestro
       chart.legend = new am4charts.Legend();
       chart.legend.itemContainers.template.clickable = true;
       chart.legend.position = 'right';
+      this.Service.sendMessageError(false);
 
     } else {
-      this.showError = true;
-      if (this.Chart) {
-        this.Chart.dispose();
-      }
+      this.Service.sendMessageError(true);
+
     }
   }
 
@@ -160,11 +162,5 @@ export class StackedBarChartComponent implements OnInit, AfterViewInit, OnDestro
       console.log(this.StateName);
       console.log(this.StateColor);
     }
-    // this.StateName[0] = 'Strength';
-    // this.StateColor[0] = '#FE5257';
-    // this.StateName[1] = 'Agility';
-    // this.StateColor[1] = '#54EC4C';
-    // this.StateName[2] = 'Intelligence';
-    // this.StateColor[2] = '#9BA2FF';
   }
 }

@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import {BehaviorSubject, Observable, of} from 'rxjs';
 import {time} from '@amcharts/amcharts4/core';
 
 @Injectable({
@@ -12,9 +12,19 @@ export class ServicesService {
   key: any;
   statKey: string;
   statKeys: [];
-  settingKeys: [];
+  // settingKeys: [];
+  private messageError = new BehaviorSubject<boolean>(false);
+  messageError$ = this.messageError.asObservable();
 
+  static getChartId(min, max) {
+    let hoursMinutes = time.getTime();
+    let Times = parseInt(hoursMinutes.toString(), 10);
+    let influencer = Times % 100;
+    min = Math.ceil(min);
+    max = Math.floor(max);
 
+    return of(Math.abs(Math.floor(Math.random() * (max - min - influencer)) + min).toString()); //The maximum is exclusive and the minimum is inclusive
+  }
   constructor(private httpClient?: HttpClient) {
     const a = [1, 2, 3, 4];
     console.log('a  \n');
@@ -29,72 +39,18 @@ export class ServicesService {
 
 //******  To set the variable of the key   ******
 
-  static getChartId(min, max) {
-    // console.log(time.getTime());
-    // console.log(typeof  time);
-    let hoursMinutes = time.getTime();
-    let Times = parseInt(hoursMinutes.toString(), 10);
-    // console.log(Times);
-    let influencer = Times % 100;
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    // console.log(influencer);
-    // console.log((Math.floor(Math.random() * (max - min )) + min));
-    return (Math.abs(Math.floor(Math.random() * (max - min - influencer)) + min).toString()); //The maximum is exclusive and the minimum is inclusive
+  static deepClone(Array) {
+    return Array;
   }
 
-//   indexB = true for Multiple Keys, false for single Key
-  setKeys(indexB: boolean, Keys: any) {
-    if (indexB == true) {
-      this.statKeys = Keys;
-    } else {
-      this.statKey = Keys;
-    }
+  sendMessageError(error: boolean) {
+    // setInterval(() => this.messageError.next(error));
+    this.messageError.next(error);
   }
-
-  //
-  getKeys(data) {
-    return Object.keys(data);
-  }
-
-  setData2D() {
-
-  }
-
-  setData3D(rawData: any) {
-    this.Data3D = rawData;
-  }
-  getHeroes(): Observable<any> {
-    return this.httpClient.get<any>('../assets/Heroes.json');
-  }
-  getDataURL(url: string): Observable<any> {
-    console.log(url);
-    return this.httpClient.get<any>(url);
-  }
-
-  // get2DChartData(component: Array<any>, dataFunc) {
-  //   // this.Data = dataFunc();
-  //   // return new ChartDataComponent( component, this.Data);
-  // }
-  public requestDataFromMultipleSources() {
-    // let response1 = this.httpClient.get(requestUrl1);
-    // let response2 = this.httpClient.get(requestUrl2);
-    // let response3 = this.httpClient.get(requestUrl3);
-    // Observable.forkJoin (RxJS 5) changes to just forkJoin() in RxJS 6
-    // return forkJoin([response1, response2, response3]);
-  }
-  getChartDataURL() {
-    return this.httpClient.get<any>('../assets/Heroes.json');
-  }
-
   get2dHeroes() {
     return this.httpClient.get<any>('../assets/Heroes.json');
   }
-  dataSample() {
-    let newData;
-    newData = [1, 2, 3, 4, 5, 6, 7, 8, 8, 9, 0];
-    return newData;
-  }
+
   findKeyAvailable(rawData: [], key1, key2?, key3?): boolean {  // Find the Object key from object-typed RAW Data & 2D use
     let data;
     let keyArray = [];
@@ -115,14 +71,6 @@ export class ServicesService {
     return result;
   }
 
-  // returnDataValue(index, statKey, data, sortData: boolean) {
-  //   if (index == -1) {
-  //     console.log(data);
-  //     return this.get2DChartData(data, this.statKey, sortData, index);
-  //   } else if (index == 1) {
-  //     return data;
-  //   }
-  // }
   getDatabyKey(data, key1: string | number, key2?: string | number, key3?: string | number) { // Get intended data(Object) by key
     const ObjKey = Object.keys(data);
     let keyArray = [];
@@ -141,7 +89,6 @@ export class ServicesService {
     return newdata;
   }
 
-
   get2DChartData(rawData: any, key: string, sortData: boolean/*, index: number*/) {
     // Process raw data into ### 2D data ### for Chart Display
     // Only accept '[]' format for 2D rawData
@@ -152,14 +99,11 @@ export class ServicesService {
     let newObjH = {};
     let newObjSet = {};
     let dataKey: any;
-    // console.log(data2d);
-    // console.log(data2d[0]);
 
     let ObjKeyH = Object.keys(rawData[0][0]);    // Get Array Keys of Hero Stat
     let ObjSettingKey = Object.keys(rawData[1][0]); // Get Array keys of StatSetting(Configuration)
     console.log(ObjSettingKey);
-    // console.log(key);
-    // console.log(ObjKeyH);
+
     dataKey = Object.keys(rawData);      // Get key from data2d
     let stateKey = ObjKeyH.find(e => {
       return e == key;
@@ -173,16 +117,11 @@ export class ServicesService {
     dataKey.forEach(keyI => {
       // Heroes information process
       if (keyI == 0) {
-        // console.log(keyI);
-        // console.log(data2D);
-        // console.log(data2d[0]);
+
         rawData[0].forEach(e1 => {
           newObjH = {[Object.keys(e1)[0]]: e1[Object.keys(e1)[0]], [Object.keys(e1)[1]]: e1[Object.keys(e1)[1]], [stateKey]: e1[stateKey]};
           newData1.push(newObjH);
-          // console.log(newObjH);
-          // console.log(newData1);
-          // console.log(data2D[0]);
-          // Sorting DATA
+
         });
         if (sortData) {
           newData1 = this.sortDataFunc(newData1, stateKey);
@@ -190,9 +129,7 @@ export class ServicesService {
       }
       // Process Configuration info for Chart
       else if (keyI == 1) {
-        // console.log(keyI);
         rawData[1].forEach(e2 => {
-          // console.log(e2);
           if (e2.statID == stateKey) {
             newObjSet = {
               [Object.keys(e2)[0]]: e2[ObjSettingKey[0]],
@@ -200,11 +137,10 @@ export class ServicesService {
               [Object.keys(e2)[2]]: e2.statColor
             };
             newData2.push(newObjSet);
-            // console.log(newData2);
           }
         });
       } else {
-        // console.log('The system does not recognize the data key!!!!!'); // To indicate that data input error as the variable does not recognize the data key
+        console.log('The system does not recognize the data key!!!!!'); // To indicate that data input error as the variable does not recognize the data key
         return;
       }
     });
@@ -287,8 +223,6 @@ export class ServicesService {
     } else if ((typeof keyOrIndex) == 'number') {
       i = keyOrIndex;
       data.sort((a, b) => a[k[i]] - b[k[i]]);
-
-      // To choose stat key, input 2
     }
     // console.log('SORTING');
     // console.log(data);
@@ -297,10 +231,58 @@ export class ServicesService {
 
   get3dHeroes() {
     const data = this.httpClient.get('../assets/Heroes.json');
-    // const data3D = data.HEROES;
-    // return data3D;
   }
 
+  setKeys(indexB: boolean, Keys: any) {
+    if (indexB == true) {
+      this.statKeys = Keys;
+    } else {
+      this.statKey = Keys;
+    }
+  }
+
+  //
+  getKeys(data) {
+    return Object.keys(data);
+  }
+
+  setData2D() {
+  }
+
+  setData3D(rawData: any) {
+    this.Data3D = rawData;
+  }
+
+  getHeroes(): Observable<any> {
+    return this.httpClient.get<any>('../assets/Heroes.json');
+  }
+
+  getDataURL(url: string): Observable<any> {
+    console.log(url);
+    return this.httpClient.get<any>(url);
+  }
+
+  // get2DChartData(component: Array<any>, dataFunc) {
+  //   // this.Data = dataFunc();
+  //   // return new ChartDataComponent( component, this.Data);
+  // }
+  public requestDataFromMultipleSources() {
+    // let response1 = this.httpClient.get(requestUrl1);
+    // let response2 = this.httpClient.get(requestUrl2);
+    // let response3 = this.httpClient.get(requestUrl3);
+    // Observable.forkJoin (RxJS 5) changes to just forkJoin() in RxJS 6
+    // return forkJoin([response1, response2, response3]);
+  }
+
+  dataSample() {
+    let newData;
+    newData = [1, 2, 3, 4, 5, 6, 7, 8, 8, 9, 0];
+    return newData;
+  }
+
+  getChartDataURL() {
+    return this.httpClient.get<any>('../assets/Heroes.json');
+  }
   mapfromEntries() {
     // data2d = await data;
     // console.log(data);
