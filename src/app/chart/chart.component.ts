@@ -75,7 +75,7 @@ export class ChartComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
           this.styleChart = 'container';
           this.styleContainer = 'container';
           this.styleError = 'noDisplay';
-          this.styleHeight = {'height': '750px'};
+          this.styleHeight = {'height': '800px'};
         } else {
           this.styleChart = 'noDisplay';
           this.styleContainer = 'container';

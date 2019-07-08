@@ -206,7 +206,8 @@ export class ServicesService {
 
     object = {
       'hisID': 'Histogram',
-      [settingKeys[settingKeys.length - 2]]: key,
+      [settingKeys[settingKeys.length - 2]]: Setting[settingKeys[settingKeys.length - 2]],
+      [settingKeys[settingKeys.length - 3]]: key,
       [settingKeys[settingKeys.length - 1]]: Setting[settingKeys[settingKeys.length - 1]]
     };
     console.log(object);

@@ -16,6 +16,7 @@ export class BarChartComponent implements OnInit, OnChanges, AfterViewInit, OnDe
   settingKeys: any;
   chartId: string;
   index: number;
+  chartName: string;
   // showError: boolean;
   // stack = false;
   Chart: am4charts.XYChart;
@@ -24,7 +25,7 @@ export class BarChartComponent implements OnInit, OnChanges, AfterViewInit, OnDe
   // @ViewChild('E1') chartE: ElementRef;
 
   constructor(private Service: ServicesService) {
-
+    this.chartName = 'Bar Chart';
   }
   ngOnInit() {
     ServicesService.getChartId(1111111, 9999999).subscribe(id => {
@@ -34,8 +35,7 @@ export class BarChartComponent implements OnInit, OnChanges, AfterViewInit, OnDe
     console.log(this.data);
     this.key = Object.keys(this.data[0]);
     console.log(this.chartId);
-    if (this.key.length > 3) {
-    }
+
 
     console.log('this.chartId :\n' + this.chartId);
   }
@@ -72,6 +72,7 @@ export class BarChartComponent implements OnInit, OnChanges, AfterViewInit, OnDe
         this.data = this.Service.histogramData(this.data, this.key[this.key.length - 1]);   // return histogram data only (1 Dimensional Array)
         this.setting = this.Service.histogramSetting(this.data, this.setting, this.key[this.key.length - 1]);
         console.log(this.setting);
+        this.chartName = 'Histogram Chart';
       }
       console.log('this.chartId :\n' + this.chartId);
 
@@ -91,7 +92,7 @@ export class BarChartComponent implements OnInit, OnChanges, AfterViewInit, OnDe
 
       console.log(this.data);
       console.log(this.setting);
-      // console.log(this.setting.statName);
+      console.log(this.setting.statName);
       console.log(this.setting[this.settingKeys[1]]);
       console.log(this.settingKeys);
       am4core.ready(() => {
@@ -140,8 +141,8 @@ export class BarChartComponent implements OnInit, OnChanges, AfterViewInit, OnDe
 
         const Title = topContainer.createChild(am4core.Label);
         Title.text = yFullName;
-        Title.fontSize = '40px';
-        Title.fontWeight = '600';
+        Title.fontSize = '30px';
+        Title.fontWeight = '400';
         Title.align = 'center';
         Title.paddingBottom = 60;
 
