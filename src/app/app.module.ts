@@ -16,6 +16,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {FormsModule} from '@angular/forms';
 import {ServicesService} from './services.service';
 import {ChartModule} from './chart/chart.module';
+import {HomePageComponent} from './home-page/home-page.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import {ChartModule} from './chart/chart.module';
     HistogramChartComponent,
     DashboardComponent,
     SideBarComponent,
-    StackedBarChartComponent
+    StackedBarChartComponent,
+    HomePageComponent
   ],
   imports: [
     BrowserModule,
