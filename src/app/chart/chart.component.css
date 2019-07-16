@@ -1,6 +1,6 @@
 .card {
   /*height: 750px;*/
-  max-width: 98%;
+  /*max-width: 98%;*/
 }
 
 .container {
@@ -41,7 +41,17 @@
   width: 140px;
   height: 40px;
   border: 0;
+}
 
+.left {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+
+}
+
+.right {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
 }
 
 .btn-dark:disabled {

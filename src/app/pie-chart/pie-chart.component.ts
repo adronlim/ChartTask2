@@ -31,6 +31,7 @@ export class PieChartComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy() {
     if (this.Chart) {
+      this.Chart.disposeChildren();
       this.Chart.dispose();
     }
   }

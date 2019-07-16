@@ -25,7 +25,6 @@ export class BarChartComponent implements OnInit, OnChanges, AfterViewInit, OnDe
   // @ViewChild('E1') chartE: ElementRef;
 
   constructor(private Service: ServicesService) {
-    this.chartName = 'Bar Chart';
   }
   ngOnInit() {
     ServicesService.getChartId(1111111, 9999999).subscribe(id => {
@@ -35,8 +34,6 @@ export class BarChartComponent implements OnInit, OnChanges, AfterViewInit, OnDe
     console.log(this.data);
     this.key = Object.keys(this.data[0]);
     console.log(this.chartId);
-
-
     console.log('this.chartId :\n' + this.chartId);
   }
 
@@ -47,19 +44,19 @@ export class BarChartComponent implements OnInit, OnChanges, AfterViewInit, OnDe
 
   ngOnDestroy() {
     console.log('OnDestroy\nthis.chartId :\n' + this.chartId);
-    delete this.Chart;
+    if (this.Chart) {
+      console.log(true);
+      this.Chart.disposeChildren();
+      this.Chart.dispose();
+    }
+    // delete this.Chart;
 
   }
 
   ngAfterViewInit(): void {
-    // console.log(this.chartE);
-    // console.log(this.chartE.nativeElement);
-    // let a = this.chartE.nativeElement.querySelector(this.chartId);
-    // console.log(a);
-    // this.chartId = ServicesService.getChartId(1111111, 9999999).subscribe(data =>{
-    //
-    // });
-
+    setTimeout(() => {
+      this.chartName = 'Bar Chart';
+    });
     if (this.key.length <= 3) {
       console.log(this.data);
       console.log(this.key.length);
@@ -72,7 +69,9 @@ export class BarChartComponent implements OnInit, OnChanges, AfterViewInit, OnDe
         this.data = this.Service.histogramData(this.data, this.key[this.key.length - 1]);   // return histogram data only (1 Dimensional Array)
         this.setting = this.Service.histogramSetting(this.data, this.setting, this.key[this.key.length - 1]);
         console.log(this.setting);
-        this.chartName = 'Histogram Chart';
+        setTimeout(() => {
+          this.chartName = 'Histogram Chart';
+        });
       }
       console.log('this.chartId :\n' + this.chartId);
 
@@ -101,9 +100,10 @@ export class BarChartComponent implements OnInit, OnChanges, AfterViewInit, OnDe
         let chart: am4charts.XYChart;
         chart = this.Chart;
         chart.percentWidth = 90;
+        chart.percentHeight = 90;
+        chart.layout = 'vertical';
         chart.align = 'center';
         chart.scrollbarX = new am4core.Scrollbar();
-        chart.align = 'center';
         chart.responsive.enabled = true;
         chart.fontFamily = 'Calibri, serif';
         chart.fontWeight = 'lighter';
@@ -117,13 +117,33 @@ export class BarChartComponent implements OnInit, OnChanges, AfterViewInit, OnDe
         const categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
         categoryAxis.dataFields.category = this.key[this.key.length - 2];
         console.log(this.key);
+
         categoryAxis.fontSize = '20px';
         categoryAxis.renderer.grid.template.location = 0;
-        categoryAxis.renderer.minGridDistance = 30;
+        categoryAxis.renderer.minGridDistance = 10;
         categoryAxis.renderer.labels.template.horizontalCenter = 'right';
         categoryAxis.renderer.labels.template.verticalCenter = 'middle';
+
         if (this.settingKeys[0] == 'hisID') {
           categoryAxis.renderer.labels.template.rotation = 0;
+          // // Set cell size in pixels
+          // let cellSize = 50;
+          // chart.events.on("datavalidated", function(ev) {
+          //
+          //   // Get objects of interest
+          //   let chart = ev.target;
+          //   let categoryAxis = chart.yAxes.getIndex(0);
+          //
+          //   // Calculate how we need to adjust chart height
+          //   let adjustHeight = chart.data.length * cellSize - categoryAxis.pixelHeight;
+          //
+          //   // get current chart height
+          //   let targetHeight = chart.pixelHeight + adjustHeight;
+          //
+          //   // Set it on chart's container
+          //   chart.svgContainer.htmlElement.style.height = targetHeight + "px";
+          // });
+
         } else {
           categoryAxis.renderer.labels.template.rotation = 270;
         }
@@ -134,17 +154,18 @@ export class BarChartComponent implements OnInit, OnChanges, AfterViewInit, OnDe
         valueAxis.fontSize = '20px';
 
         const topContainer = chart.chartContainer.createChild(am4core.Container);
-        topContainer.layout = 'absolute';
         topContainer.toBack();
-        topContainer.paddingBottom = 15;
+        topContainer.layout = 'vertical';
+        topContainer.paddingTop = 15;
         topContainer.width = am4core.percent(100);
 
         const Title = topContainer.createChild(am4core.Label);
         Title.text = yFullName;
-        Title.fontSize = '30px';
+        Title.fontSize = '20px';
         Title.fontWeight = '400';
         Title.align = 'center';
-        Title.paddingBottom = 60;
+        // Title.
+        Title.paddingBottom = 30;
 
         // Create series
         const series = chart.series.push(new am4charts.ColumnSeries());
@@ -161,8 +182,8 @@ export class BarChartComponent implements OnInit, OnChanges, AfterViewInit, OnDe
         series.columns.template.tooltipText = '{categoryX}: [bold]{valueY}[/]';
         series.columns.template.strokeWidth = 0;
         series.tooltip.pointerOrientation = 'vertical';
-        series.columns.template.column.cornerRadiusTopLeft = 10;
-        series.columns.template.column.cornerRadiusTopRight = 10;
+        series.columns.template.column.cornerRadiusTopLeft = 8;
+        series.columns.template.column.cornerRadiusTopRight = 8;
         series.columns.template.fillOpacity = .8;
 
         const columnTemplate = series.columns.template;

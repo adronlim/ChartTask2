@@ -39,40 +39,36 @@ export class StackedBarChartComponent implements OnInit, AfterViewInit, OnDestro
     this.idKey = this.statKeys[0];
     this.nameKey = this.statKeys[1];
     this.statKeys = this.statKeys.slice(2);
-    console.log(this.setting);
-    console.log(this.data);
-    console.log(this.statKeys);
-    console.log(this.setting);
-    console.log(this.settingKeys);
 
     if (this.key.length > 3) {
       this.key = Object.keys(this.data[0]);
-      console.log(this.chartId);
       this.settingKeys = Object.keys(this.setting[0]);
       this.configData();
     }
   }
 
   ngOnDestroy() {
+    this.Chart.disposeChildren();
+    this.Chart.dispose();
     if (this.Chart) {
+      this.Chart.disposeChildren();
       this.Chart.dispose();
     }
+    delete this.Chart;
   }
 
   ngAfterViewInit() {
     this.Chart = am4core.create(this.chartId, am4charts.XYChart);
-
     if (this.key.length > 3) {
       this.showError = false;
       let chart: am4charts.XYChart;
       chart = this.Chart;
-      chart.percentWidth = 95;
+      chart.percentWidth = 90;
       chart.scrollbarX = new am4core.Scrollbar();
       chart.align = 'center';
       chart.responsive.enabled = false;
       chart.fontFamily = 'Calibri, serif';
       chart.fontWeight = 'lighter';
-
       chart.maskBullets = false;
 
       let i = 0;
@@ -82,39 +78,57 @@ export class StackedBarChartComponent implements OnInit, AfterViewInit, OnDestro
       categoryAxis.dataFields.category = this.nameKey;
       categoryAxis.fontSize = '20px';
       categoryAxis.renderer.grid.template.location = 0;
-      categoryAxis.renderer.minGridDistance = 30;
+      categoryAxis.renderer.minGridDistance = 20;
       categoryAxis.renderer.labels.template.horizontalCenter = 'right';
       categoryAxis.renderer.labels.template.verticalCenter = 'middle';
       categoryAxis.renderer.labels.template.rotation = 270;
-      categoryAxis.tooltip.disabled = true;
+      categoryAxis.tooltip.disabled = false;
       categoryAxis.renderer.minHeight = 110;
+      categoryAxis.renderer.maxHeight = 500;
+      categoryAxis.renderer.inside = true;
+      categoryAxis.resizable = true;
+      // const Title = topContainer.createChild(am4core.Label);
+      // Title.text = 'Heroes';
+      // Title.fontSize = '40px';
+      // Title.fontWeight = '600';
+      // Title.align = 'center';
+      // Title.paddingBottom = 60;
 
-      // console.log(chart.data);
       const valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
       valueAxis.renderer.line.strokeOpacity = 0.5;
-      // valueAxis.renderer.baseGrid.disabled = true;
-      valueAxis.renderer.minGridDistance = 40;
+      valueAxis.renderer.baseGrid.disabled = true;
+      valueAxis.renderer.minGridDistance = 60;
       valueAxis.fontSize = '20px';
       valueAxis.calculateTotals = true;
+      // valueAxis.title.text = 'Stat';
+      // valueAxis.title.fontWeight = 'bold';
+      // valueAxis.title.fontSize = '2vw';
+      // valueAxis.renderer.baseGrid.disabled = false;
 
-      const topContainer = chart.chartContainer.createChild(am4core.Container);
-      topContainer.layout = 'absolute';
-      topContainer.toFront();
-      topContainer.paddingBottom = 15;
-      topContainer.width = am4core.percent(100);
+      chart.responsive.enabled = true;
+      chart.paddingBottom = 10;
 
-      const Title = topContainer.createChild(am4core.Label);
-      Title.text = 'Heroes';
-      Title.fontSize = '40px';
-      Title.fontWeight = '600';
-      Title.align = 'center';
-      Title.paddingBottom = 60;
-      valueAxis.title.text = 'Stat';
+      // const topContainer = chart.chartContainer.createChild(am4core.Container);
+      // topContainer.layout = 'absolute';
+      // topContainer.toFront();
+      // topContainer.paddingBottom = 15;
+      // topContainer.width = am4core.percent(80);
+
+      // const span = topContainer.createChild(am4charts.AxisLabel.);
+      // span.renderer.line.strokeOpacity = 0.5;
+      // span.renderer.minGridDistance = 60;
+      // span.fontSize = '20px';
+      // span.calculateTotals = true;
+      // span.title.text = 'Stat';
+      // span.title.fontWeight = 'bold';
+      // span.title.fontSize = '2vw';
+      // span.title.validatePosition();
+
 
       let series;
       let tTip = '';
+
       for (let h = 3; h > 0; h--) {
-        console.log('ToolTip');
         series = chart.series.push(new am4charts.ColumnSeries());
         series.name = this.statKeys[0];
         series.dataFields.valueY = this.statKeys[this.statKeys.length - h];
@@ -122,15 +136,17 @@ export class StackedBarChartComponent implements OnInit, AfterViewInit, OnDestro
         series.legendSettings.labelText = this.statKeys[this.statKeys.length - h];
         series.legendSettings.itemLabelText = this.statKeys[this.statKeys.length - h];
         tTip = tTip + this.statKeys[this.statKeys.length - h] + ' : [bold] {' + this.statKeys[this.statKeys.length - h] + '} [/]\n ';
-
         series.fill = am4core.color(this.StateColor[i]);
         series.fillOpacity = 0.8;
         series.stacked = true;
-        if (h === 0) {
-          tTip = tTip + 'Total Value : {valueY.total}';
+
+        if (h === 1) {
+          tTip = tTip + 'Total Value : [bold]{valueY.total}[\]';
           series.tooltip.pointerOrientation = 'horizontal';
           series.tooltip.getFillFromObject = false;
-          series.tooltip.background.fill = am4core.color('#000000');
+          series.tooltip.background.fill = am4core.color('#343434');
+          series.columns.template.column.cornerRadiusTopLeft = 1;
+          series.columns.template.column.cornerRadiusTopRight = 1;
           series.tooltipText = tTip;
         }
         i++;
@@ -141,7 +157,14 @@ export class StackedBarChartComponent implements OnInit, AfterViewInit, OnDestro
       // Legend
       chart.legend = new am4charts.Legend();
       chart.legend.itemContainers.template.clickable = true;
-      chart.legend.position = 'right';
+      chart.legend.position = 'bottom';
+      chart.legend.useDefaultMarker = true;
+      let marker = chart.legend.markers.template.children.getIndex(0);
+      // @ts-ignore
+      marker.cornerRadius(12, 12, 12, 12);
+      marker.strokeWidth = 2;
+      marker.strokeOpacity = 1;
+      marker.stroke = am4core.color('#ccc');
       this.Service.sendMessageError(false);
 
     } else {
@@ -153,14 +176,9 @@ export class StackedBarChartComponent implements OnInit, AfterViewInit, OnDestro
   configData() {
     let i = 0;
     for (let setting of this.setting) {
-      console.log(setting);
-      console.log(setting[this.settingKeys[1]]);
-
       this.StateName[i] = setting[this.settingKeys[1]];
       this.StateColor[i] = setting[this.settingKeys[2]];
       i++;
-      console.log(this.StateName);
-      console.log(this.StateColor);
     }
   }
 }

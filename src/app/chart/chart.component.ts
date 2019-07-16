@@ -43,9 +43,7 @@ export class ChartComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   @ViewChild(ChartDirective) chartDirective: ChartDirective;
   @ViewChild('inputCB') inputCB?: ElementRef;
   @Input() onClick: boolean;
-
   @Input() showError: boolean;
-
   @Input()
   set idComponentDB(idComponentDB: any) {
     this._idComponentChart = idComponentDB;
@@ -73,17 +71,16 @@ export class ChartComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         this.showError = error;
         if (!error) {
           this.styleChart = 'container';
-          this.styleContainer = 'container';
-          this.styleError = 'noDisplay';
+          // this.styleContainer = 'container';
+          // this.styleError = 'noDisplay';
           this.styleHeight = {'height': '800px'};
         } else {
           this.styleChart = 'noDisplay';
-          this.styleContainer = 'container';
-          this.styleError = 'container';
+          // this.styleContainer = 'container';
+          // this.styleError = 'container';
           this.styleHeight = {'height': '300px'};
         }
       });
-
       console.log(this.showError);
     });
     this.statKey = 'str';
@@ -147,16 +144,22 @@ export class ChartComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     switch (this._idComponentChart) {
       case 'BarChartComponent':
         this.currentIndex = 0;
+        this.is3D = false;
         console.log(this.processedData);
         break;
       case 'PieChartComponent':
         this.currentIndex = 1;
+        this.is3D = false;
+
         break;
       case 'HistogramChartComponent':
         this.currentIndex = 2;
+        this.is3D = false;
+
         break;
       case 'StackedBarChartComponent':
         this.currentIndex = 3;
+        this.is3D = true;
         break;
       default:
         return;
