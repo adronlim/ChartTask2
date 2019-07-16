@@ -1,4 +1,5 @@
 import {AfterViewInit, Component, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import {Router, VERSION} from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -10,9 +11,14 @@ export class AppComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy
   IdChartComponent: any;
   Id_Chart_Component: any;
   OnClick: boolean;
+  name: any;
 
+  constructor(private router: Router) {
+    this.name = `Angular! v${VERSION.full}`;
+  }
   ngOnInit() {
     console.log('ngOnint \n', this.IdChartComponent);
+    this.loadModule();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -25,7 +31,18 @@ export class AppComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy
   ngAfterViewInit(): void {
     console.log('ngAfterVuewInt \n', this.IdChartComponent);
     this.Id_Chart_Component = this.IdChartComponent;
+  }
 
+  loadModule() {
+    this.router.resetConfig([
+      ...this.router.config,
+      {
+        path: 'dynamicModule',
+        loadChildren: './dynamic-component.module.ts#DynamicComponentModule'
+      }
+    ]);
+
+    this.router.navigateByUrl('dynamicModule/dynamicComponent1');
   }
   getChartCompID(e: any) {
     this.IdChartComponent = e;

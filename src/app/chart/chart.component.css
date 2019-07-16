@@ -55,7 +55,7 @@
 }
 
 .btn-dark:disabled {
-  background-color: grey;
+  background-color: #afafaf;
 }
 
 .btn-dark:hover {
@@ -65,7 +65,7 @@
 }
 
 .btn-dark:disabled:hover {
-  background-color: grey;
+  background-color: #afafaf;
   color: white;
   border: 0;
 }

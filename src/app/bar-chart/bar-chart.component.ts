@@ -20,11 +20,12 @@ export class BarChartComponent implements OnInit, OnChanges, AfterViewInit, OnDe
   // showError: boolean;
   // stack = false;
   Chart: am4charts.XYChart;
-  chartData: any = [];
+  chartData: any;
 
   // @ViewChild('E1') chartE: ElementRef;
 
   constructor(private Service: ServicesService) {
+    this.chartData = [];
   }
   ngOnInit() {
     ServicesService.getChartId(1111111, 9999999).subscribe(id => {
@@ -104,9 +105,11 @@ export class BarChartComponent implements OnInit, OnChanges, AfterViewInit, OnDe
         chart.layout = 'vertical';
         chart.align = 'center';
         chart.scrollbarX = new am4core.Scrollbar();
-        chart.responsive.enabled = true;
+        chart.responsive.enabled = false;
         chart.fontFamily = 'Calibri, serif';
         chart.fontWeight = 'lighter';
+        console.log(this.chartData);
+        console.log(this.data);
         this.chartData = [...this.data];
         chart.data = this.chartData;
         console.log(chart.data);

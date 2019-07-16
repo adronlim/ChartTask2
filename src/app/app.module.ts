@@ -17,7 +17,23 @@ import {FormsModule} from '@angular/forms';
 import {ServicesService} from './services.service';
 import {ChartModule} from './chart/chart.module';
 import {HomePageComponent} from './home-page/home-page.component';
+import {RouterModule, Routes} from '@angular/router';
 
+const appRoutes: Routes = [
+  // { path: 'crisis-center', component: CrisisListComponent },
+  // { path: 'hero/:id',      component: HeroDetailComponent },
+  {
+    path: 'home',
+    component: AppComponent,
+    data: {title: 'Heroes List'}
+  },
+  {
+    path: '1',
+    redirectTo: '/home',
+    pathMatch: 'full'
+  }
+  // , { path: '**', component: PageNotFoundComponent }
+];
 @NgModule({
   declarations: [
     AppComponent,
@@ -35,7 +51,11 @@ import {HomePageComponent} from './home-page/home-page.component';
     BrowserModule,
     FormsModule,
     HttpClientModule,
-    ChartModule
+    ChartModule,
+    RouterModule.forRoot(
+      appRoutes,
+      {enableTracing: true} // <-- debugging purposes only
+    )
   ],
   providers: [],
   entryComponents: [
