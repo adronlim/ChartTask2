@@ -1,5 +1,6 @@
 // Styling for custom cards
 // Custom class for the background icon in card blocks
+@import "mixins";
 .card-body-icon {
   position: absolute;
   z-index: 0;

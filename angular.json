@@ -8,7 +8,6 @@
       "sourceRoot": "src",
       "projectType": "application",
       "prefix": "app",
-      "schematics": {},
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
@@ -20,17 +19,32 @@
             "tsConfig": "src/tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
-              "src/assets",
-              "src/Template"
+              "src/assets"
             ],
             "styles": [
-              "src/styles.css",
-              "node_modules/bootstrap/dist/css/bootstrap.min.css"
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "src/assets/Template/vendor/datatables/dataTables.bootstrap4.min.css",
+              "src/assets/Template/css/sb-admin.min.css",
+              "src/assets/Template/scss/sb-admin.scss",
+              "src/assets/Template/scss/_cards.scss",
+              "src/assets/Template/scss/_login.scss",
+              "src/assets/Template/scss/_mixins.scss",
+              "src/assets/Template/scss/_utilities.scss",
+              "src/assets/Template/scss/_variables.scss",
+              "src/assets/Template/scss/_footer.scss",
+              "src/assets/Template/scss/_global.scss",
+              "src/assets/Template/scss/_navbar.scss",
+              "src/styles.scss"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/popper.js/dist/umd/popper.min.js",
-              "node_modules/bootstrap/dist/js/bootstrap.min.js"
+              "node_modules/bootstrap/dist/js/bootstrap.min.js",
+              "src/assets/Template/vendor/jquery/jquery.min.js",
+              "src/assets/Template/vendor/jquery-easing/jquery.easing.min.js",
+              "src/assets/Template/vendor/datatables/dataTables.bootstrap4.min.js",
+              "src/assets/Template/vendor/datatables/jquery.dataTables.min.js",
+              "src/assets/Template/js/sb-admin.min.js"
             ],
             "es5BrowserSupport": true
           },
@@ -65,7 +79,7 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
             "browserTarget": "DynamiChart:build",
-            "port": 1111
+            "port": 2222
           },
           "configurations": {
             "production": {
@@ -87,20 +101,36 @@
             "tsConfig": "src/tsconfig.spec.json",
             "karmaConfig": "src/karma.conf.js",
             "styles": [
-              "src/styles.css"
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "src/assets/Template/vendor/datatables/dataTables.bootstrap4.min.css",
+              "src/assets/Template/css/sb-admin.min.css",
+              "src/assets/Template/scss/sb-admin.scss",
+              "src/assets/Template/scss/_cards.scss",
+              "src/assets/Template/scss/_login.scss",
+              "src/assets/Template/scss/_mixins.scss",
+              "src/assets/Template/scss/_utilities.scss",
+              "src/assets/Template/scss/_variables.scss",
+              "src/assets/Template/scss/_footer.scss",
+              "src/assets/Template/scss/_global.scss",
+              "src/assets/Template/scss/_navbar.scss",
+              "src/styles.scss"
             ],
-            "scripts": [],
+            "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/popper.js/dist/umd/popper.min.js",
+              "node_modules/bootstrap/dist/js/bootstrap.min.js",
+              "src/assets/Template/vendor/jquery/jquery.min.js",
+              "src/assets/Template/vendor/jquery-easing/jquery.easing.min.js",
+              "src/assets/Template/vendor/datatables/dataTables.bootstrap4.min.js",
+              "src/assets/Template/vendor/datatables/jquery.dataTables.min.js",
+              "src/assets/Template/js/sb-admin.min.js"
+            ],
             "assets": [
               "src/favicon.ico",
               {
                 "glob": "**/*",
                 "input": "src/assets/",
                 "output": "/assets/"
-              },
-              {
-                "glob": "**/*",
-                "input": "src/Template/",
-                "output": "/Template/"
               }
             ]
           }

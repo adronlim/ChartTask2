@@ -18,18 +18,57 @@ import {ServicesService} from './services.service';
 import {ChartModule} from './chart/chart.module';
 import {HomePageComponent} from './home-page/home-page.component';
 import {RouterModule, Routes} from '@angular/router';
+import {
+  blankComponent,
+  chartComponent,
+  errorComponent,
+  forgotPasswordComponent,
+  loginComponent,
+  registerComponent,
+  tableComponent
+} from './html/html.component';
+import {HtmlModule} from './html/html.module';
 
 const appRoutes: Routes = [
-  // { path: 'crisis-center', component: CrisisListComponent },
-  // { path: 'hero/:id',      component: HeroDetailComponent },
   {
     path: 'home',
-    component: AppComponent,
-    data: {title: 'Heroes List'}
+    component: AppComponent
   },
   {
-    path: '1',
-    redirectTo: '/home',
+    path: '404',
+    component: errorComponent
+  },
+  {
+    path: 'charts',
+    component: chartComponent
+  },
+  {
+    path: 'forgot-password',
+    component: forgotPasswordComponent
+  },
+  {
+    path: 'login',
+    component: loginComponent
+  },
+  {
+    path: 'blank',
+    component: blankComponent
+  },
+  {
+    path: 'register',
+    component: registerComponent
+  },
+  {
+    path: 'tables',
+    component: tableComponent
+  },
+  {
+    path: 'blank',
+    component: blankComponent
+  },
+  {
+    path: '**',
+    redirectTo: '',
     pathMatch: 'full'
   }
   // , { path: '**', component: PageNotFoundComponent }
@@ -52,6 +91,7 @@ const appRoutes: Routes = [
     FormsModule,
     HttpClientModule,
     ChartModule,
+    HtmlModule,
     RouterModule.forRoot(
       appRoutes,
       {enableTracing: true} // <-- debugging purposes only
@@ -63,8 +103,7 @@ const appRoutes: Routes = [
     PieChartComponent,
     HistogramChartComponent,
     StackedBarChartComponent
-  ]
-  ,
+  ],
   exports: [],
   bootstrap: [AppComponent]
 })

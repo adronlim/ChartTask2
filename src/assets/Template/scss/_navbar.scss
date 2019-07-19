@@ -38,9 +38,9 @@
       }
     }
 
+    // remove outline for Safari and Firefox
     .nav-link {
       &:focus {
-        // remove outline for Safari and Firefox
         outline: none;
       }
 
