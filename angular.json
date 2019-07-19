@@ -25,16 +25,7 @@
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/assets/Template/vendor/datatables/dataTables.bootstrap4.min.css",
               "src/assets/Template/css/sb-admin.min.css",
-              "src/assets/Template/scss/sb-admin.scss",
-              "src/assets/Template/scss/_cards.scss",
-              "src/assets/Template/scss/_login.scss",
-              "src/assets/Template/scss/_mixins.scss",
-              "src/assets/Template/scss/_utilities.scss",
-              "src/assets/Template/scss/_variables.scss",
-              "src/assets/Template/scss/_footer.scss",
-              "src/assets/Template/scss/_global.scss",
-              "src/assets/Template/scss/_navbar.scss",
-              "src/styles.scss"
+              "src/assets/Template/scss/sb-admin.scss"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
@@ -44,7 +35,13 @@
               "src/assets/Template/vendor/jquery-easing/jquery.easing.min.js",
               "src/assets/Template/vendor/datatables/dataTables.bootstrap4.min.js",
               "src/assets/Template/vendor/datatables/jquery.dataTables.min.js",
-              "src/assets/Template/js/sb-admin.min.js"
+              "src/assets/Template/js/sb-admin.min.js",
+              "src/assets/Template/vendor/chart.js/Chart.bundle.min.js",
+              "src/assets/Template/vendor/chart.js/Chart.min.js",
+              "src/assets/Template/js/demo/chart-area-demo.js",
+              "src/assets/Template/js/demo/chart-bar-demo.js",
+              "src/assets/Template/js/demo/chart-pie-demo.js",
+              "src/assets/Template/js/demo/datatables-demo.js"
             ],
             "es5BrowserSupport": true
           },
@@ -103,17 +100,7 @@
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/assets/Template/vendor/datatables/dataTables.bootstrap4.min.css",
-              "src/assets/Template/css/sb-admin.min.css",
-              "src/assets/Template/scss/sb-admin.scss",
-              "src/assets/Template/scss/_cards.scss",
-              "src/assets/Template/scss/_login.scss",
-              "src/assets/Template/scss/_mixins.scss",
-              "src/assets/Template/scss/_utilities.scss",
-              "src/assets/Template/scss/_variables.scss",
-              "src/assets/Template/scss/_footer.scss",
-              "src/assets/Template/scss/_global.scss",
-              "src/assets/Template/scss/_navbar.scss",
-              "src/styles.scss"
+              "src/assets/Template/css/sb-admin.min.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
@@ -123,7 +110,12 @@
               "src/assets/Template/vendor/jquery-easing/jquery.easing.min.js",
               "src/assets/Template/vendor/datatables/dataTables.bootstrap4.min.js",
               "src/assets/Template/vendor/datatables/jquery.dataTables.min.js",
-              "src/assets/Template/js/sb-admin.min.js"
+              "src/assets/Template/js/sb-admin.min.js",
+              "src/assets/Template/js/demo/chart-area-demo.js",
+              "src/assets/Template/js/demo/chart-bar-demo.js",
+              "src/assets/Template/js/demo/chart-pie-demo.js",
+              "src/assets/Template/js/demo/datatables-demo.js"
+
             ],
             "assets": [
               "src/favicon.ico",
