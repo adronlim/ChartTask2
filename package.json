@@ -24,7 +24,7 @@
     "@fortawesome/fontawesome-free": "5.9.0",
     "bootstrap4": "0.0.1-security",
     "core-js": "^2.5.4",
-    "chart.js": "2.8.0",
+    "chart.js": "2.9.4",
     "jquery": "^3.4.0",
     "datatables.net-bs4": "1.10.19",
     "jquery.easing": "^1.4.1",
